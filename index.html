@@ -3,135 +3,404 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prestige Visual | Produtos Personalizados</title>
+    <title>Prestige Visual | Catálogo com Personalização</title>
     <style>
-        /* (mesmo CSS anterior, sem alterações - mantenha igual) */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: #f5f5f5; color: #333; line-height: 1.6; }
         header { background: #111; color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
         header nav a { margin-left: 1rem; color: #fff; cursor: pointer; }
         header nav a:hover { color: #f0a500; }
         .logo img { height: 50px; vertical-align: middle; }
-        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; padding: 2rem; }
-        .produto-card { background: #fff; padding: 1rem; border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.1); text-align: center; transition: 0.2s; }
-        .produto-card:hover { transform: translateY(-5px); }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 1rem; }
+        .categorias-grid, .subcategorias-grid, .produtos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem 0;
+        }
+        .card {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .card:hover { transform: translateY(-3px); background: #fafafa; }
+        .produto-card {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
         .produto-card img { width: 100%; height: 180px; object-fit: contain; background: #fafafa; border-radius: 8px; }
         .produto-card h3 { margin: 1rem 0 0.5rem; }
         .produto-card p { font-weight: bold; color: #f05a28; }
         .produto-card button { margin-top: 0.5rem; padding: 0.5rem 1rem; background: #0077cc; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
+        .btn { padding: 0.5rem 1rem; border-radius: 6px; border: none; cursor: pointer; }
+        .btn-primary { background: #0077cc; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
         #carrinho-itens { background: #fff; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; flex-wrap: wrap; }
         .frete-campos { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
         .frete-campos div { flex: 1; min-width: 100px; }
         .frete-campos input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; }
-        button { padding: 0.75rem 1.5rem; border-radius: 8px; border: none; background: #0077cc; color: #fff; cursor: pointer; }
         .total-carrinho { background: #f8f9fa; padding: 12px; border-radius: 12px; margin: 15px 0; font-weight: bold; }
         .section { display: none; }
         .active-section { display: block; }
-        .back-button { background: #6c757d; margin-top: 10px; }
+        .back-button { background: #6c757d; margin-top: 10px; display: inline-block; }
         .admin-form { background: #fff; padding: 1rem; border-radius: 12px; margin: 1rem 0; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-weight: bold; margin-bottom: 0.3rem; }
+        input, textarea, select { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 6px; }
         @media (max-width: 600px) { .frete-campos div { min-width: 100%; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">
-        <!-- SUBSTITUA 'logo.png' pelo nome do seu arquivo de logo -->
-        <img src="img/logo.png" alt="Prestige Visual" style="height: 50px;">
-    </div>
+    <div class="logo"><img src="img/logo.png" alt="Prestige Visual" style="height: 50px;"></div>
     <nav>
-        <a data-nav="produtos">🏠 Produtos</a>
+        <a data-nav="categorias">🏠 Categorias</a>
         <a data-nav="carrinho">🛒 Carrinho</a>
         <a data-nav="admin">🔧 Admin</a>
     </nav>
 </header>
 
-<!-- Banner (opcional) -->
 <div id="banner" style="text-align: center; margin: 10px 0;">
-    <!-- SUBSTITUA 'banner.jpg' pelo seu arquivo de banner -->
     <img src="img/banner.jpg" alt="Banner Prestige" style="width: 100%; max-height: 300px; object-fit: cover;">
 </div>
 
-<!-- Seção Produtos -->
-<section id="produtos-section" class="section active-section">
-    <div class="grid-produtos" id="produtos-grid"></div>
-</section>
+<div class="container">
+    <!-- Seção Categorias -->
+    <section id="categorias-section" class="section active-section">
+        <h2>Nossas Categorias</h2>
+        <div id="categorias-grid" class="categorias-grid"></div>
+    </section>
 
-<!-- Carrinho -->
-<section id="carrinho-section" class="section">
-    <div style="padding: 1rem 2rem;">
-        <h2>🛍️ Seu Carrinho</h2>
-        <div id="carrinho-itens"></div>
-        <div id="frete" style="background:#fef7e0; padding:1rem; border-radius:12px;">
-            <h3>✈️ Calcular Frete (Correios - simulado)</h3>
-            <div class="frete-campos">
-                <div><label>CEP destino</label><input type="text" id="cep" placeholder="Ex: 01000-000"></div>
-                <div><label>Peso (kg)</label><input type="number" id="peso" step="0.1" value="1.0"></div>
-                <div><label>Altura (cm)</label><input type="number" id="altura" step="0.5" value="10"></div>
-                <div><label>Largura (cm)</label><input type="number" id="largura" step="0.5" value="20"></div>
-                <div><label>Comprimento (cm)</label><input type="number" id="comprimento" step="0.5" value="30"></div>
-                <div><button id="calcular-frete-btn">📦 Calcular</button></div>
+    <!-- Seção Subcategorias -->
+    <section id="subcategorias-section" class="section">
+        <button class="back-button" data-voltar="categorias">← Voltar para Categorias</button>
+        <h2 id="subcategoria-titulo"></h2>
+        <div id="subcategorias-grid" class="subcategorias-grid"></div>
+    </section>
+
+    <!-- Seção Produtos (itens finais) -->
+    <section id="produtos-section" class="section">
+        <button class="back-button" data-voltar="subcategorias">← Voltar</button>
+        <h2 id="produtos-titulo"></h2>
+        <div id="produtos-grid" class="produtos-grid"></div>
+    </section>
+
+    <!-- Seção Personalização -->
+    <section id="personalizacao-section" class="section">
+        <button class="back-button" data-voltar="produtos">← Cancelar</button>
+        <div class="produto-card" id="personalizacao-conteudo" style="max-width: 600px; margin: 1rem auto;"></div>
+        <div style="text-align: center;"><button id="confirmar-add-carrinho" class="btn-primary">✅ Adicionar ao Carrinho</button></div>
+    </section>
+
+    <!-- Seção Carrinho (mantida igual) -->
+    <section id="carrinho-section" class="section">
+        <div style="padding: 1rem 0;">
+            <h2>🛍️ Seu Carrinho</h2>
+            <div id="carrinho-itens"></div>
+            <div id="frete" style="background:#fef7e0; padding:1rem; border-radius:12px;">
+                <h3>✈️ Calcular Frete (Correios - simulado)</h3>
+                <div class="frete-campos">
+                    <div><label>CEP destino</label><input type="text" id="cep" placeholder="Ex: 01000-000"></div>
+                    <div><label>Peso (kg)</label><input type="number" id="peso" step="0.1" value="1.0"></div>
+                    <div><label>Altura (cm)</label><input type="number" id="altura" step="0.5" value="10"></div>
+                    <div><label>Largura (cm)</label><input type="number" id="largura" step="0.5" value="20"></div>
+                    <div><label>Comprimento (cm)</label><input type="number" id="comprimento" step="0.5" value="30"></div>
+                    <div><button id="calcular-frete-btn" class="btn-primary">📦 Calcular</button></div>
+                </div>
+                <div id="resultado-frete" style="font-weight:bold;"></div>
             </div>
-            <div id="resultado-frete" style="font-weight:bold;"></div>
+            <div id="resumo-carrinho" class="total-carrinho"></div>
+            <button id="finalizar-compra" class="btn-primary">✅ Finalizar Compra</button>
+            <button class="back-button" data-voltar="categorias" style="margin-left: 1rem;">← Continuar comprando</button>
         </div>
-        <div id="resumo-carrinho" class="total-carrinho"></div>
-        <button id="finalizar-compra">✅ Finalizar Compra</button>
-        <button class="back-button" data-voltar="produtos">← Voltar</button>
-    </div>
-</section>
+    </section>
 
-<!-- Admin -->
-<section id="admin-section" class="section">
-    <div style="padding: 1rem 2rem;">
-        <h2>🛠️ Painel Administrativo</h2>
-        <div class="admin-form">
-            <h4>➕ Adicionar Produto</h4>
-            <input type="text" id="novo-nome" placeholder="Nome do produto">
-            <input type="number" id="novo-preco" placeholder="Preço (R$)">
-            <input type="text" id="nova-imagem" placeholder="URL da imagem (ex: img/produtos/novo.jpg)">
-            <button id="btn-add-produto">Adicionar</button>
+    <!-- Seção Admin (mantida, mas agora gerencia produtos com categorias) -->
+    <section id="admin-section" class="section">
+        <div style="padding: 1rem 0;">
+            <h2>🛠️ Painel Administrativo</h2>
+            <div class="admin-form">
+                <h4>➕ Adicionar Produto</h4>
+                <input type="text" id="novo-nome" placeholder="Nome do produto">
+                <input type="number" id="novo-preco" placeholder="Preço (R$)">
+                <input type="text" id="nova-imagem" placeholder="URL da imagem">
+                <select id="nova-categoria">
+                    <option value="">Selecione a categoria</option>
+                </select>
+                <select id="nova-subcategoria">
+                    <option value="">Selecione a subcategoria</option>
+                </select>
+                <button id="btn-add-produto" class="btn-primary">Adicionar</button>
+            </div>
+            <div id="lista-produtos"></div>
+            <h3>📋 Pedidos Realizados</h3>
+            <div id="lista-pedidos"></div>
         </div>
-        <div id="lista-produtos"></div>
-        <h3>📋 Pedidos Realizados</h3>
-        <div id="lista-pedidos"></div>
-    </div>
-</section>
+    </section>
+</div>
 
 <script>
-    // ========== PRODUTOS INICIAIS COM IMAGENS LOCAIS ==========
-    // ATENÇÃO: Troque os caminhos das imagens pelos nomes reais dos seus arquivos
-    let products = [];
-    let cart = [];
-    let currentShipping = 0;
-    let currentDeadline = 0;
+    // ========== ESTRUTURA DE CATEGORIAS E SUBCATEGORIAS (ORDEM ALFABÉTICA) ==========
+    const categoriasData = {
+        "ACM": ["Branco", "Fosco", "Brilhante"],
+        "Adesivo": ["Vinil", "Transparente", "Recortado"],
+        "Camisetas": ["Polo", "Básica", "Dry Fit"],
+        "Chaveiro": ["Acrílico (2 a 15mm)", "MDF", "Acrílico + MDF"],
+        "Expositor": ["Mesa", "Piso", "Gôndola"],
+        "Impressos": ["Papel Fotográfico", "Cartão", "Lona"],
+        "Letras Corte Laser": ["Acrílico", "MDF", "Madeira"],
+        "MDF": ["3mm", "6mm", "9mm", "12mm"],
+        "Placas": ["ACM", "PVC", "MDF"],
+        "Prisma": ["Acrílico", "Cristal"],
+        "PVC": ["2mm", "3mm", "5mm"],
+        "Sacolas Personalizadas": ["Papel", "Plástico", "Ecológica"],
+        "Troféus": ["Acrílico", "MDF", "Acrílico + MDF", "Prisma"]
+    };
+    // Lista de categorias em ordem alfabética
+    const categoriasList = Object.keys(categoriasData).sort();
 
+    // ========== PRODUTOS (cada produto pertence a uma categoria e subcategoria) ==========
+    let products = [];   // cada produto: { id, name, price, image, categoria, subcategoria }
+    let cart = [];
+    let currentShipping = 0, currentDeadline = 0;
+
+    // Variáveis de navegação
+    let currentCategoria = "";
+    let currentSubcategoria = "";
+    let currentProduto = null;
+
+    // Personalização temporária
+    let personalizacao = { descricao: "", arquivoBase64: "" };
+
+    // ========== CARREGAR DADOS ==========
     function loadData() {
-        const stored = localStorage.getItem("prestige_products");
+        const stored = localStorage.getItem("prestige_products_v2");
         if (stored) {
             products = JSON.parse(stored);
         } else {
+            // Produtos iniciais (exemplos)
             products = [
-                { id: 1, name: "Chaveiro Acrílico", price: 12.90, image: "img/produtos/chaveiro-acrilico.jpg" },
-                { id: 2, name: "Chaveiro MDF", price: 9.90, image: "img/produtos/chaveiro-mdf.jpg" },
-                { id: 3, name: "Placa ACM Personalizada", price: 45.90, image: "img/produtos/placa-acm.jpg" },
-                { id: 4, name: "Placa PVC 2mm", price: 32.90, image: "img/produtos/placa-pvc.jpg" },
-                { id: 5, name: "Troféu Acrílico", price: 55.90, image: "img/produtos/trofeu-acrilico.jpg" },
-                { id: 6, name: "Troféu MDF", price: 48.90, image: "img/produtos/trofeu-mdf.jpg" },
-                { id: 7, name: "Troféu Acrílico + MDF", price: 69.90, image: "img/produtos/trofeu-combo.jpg" }
+                { id: 1, name: "Chaveiro Acrílico 5mm", price: 12.90, image: "img/produtos/chaveiro-acrilico.jpg", categoria: "Chaveiro", subcategoria: "Acrílico (2 a 15mm)" },
+                { id: 2, name: "Chaveiro MDF", price: 9.90, image: "img/produtos/chaveiro-mdf.jpg", categoria: "Chaveiro", subcategoria: "MDF" },
+                { id: 3, name: "Placa ACM Branca", price: 45.90, image: "img/produtos/placa-acm.jpg", categoria: "ACM", subcategoria: "Branco" },
+                { id: 4, name: "Placa PVC 2mm", price: 32.90, image: "img/produtos/placa-pvc.jpg", categoria: "PVC", subcategoria: "2mm" },
+                { id: 5, name: "Troféu Acrílico", price: 55.90, image: "img/produtos/trofeu-acrilico.jpg", categoria: "Troféus", subcategoria: "Acrílico" },
+                { id: 6, name: "Troféu MDF", price: 48.90, image: "img/produtos/trofeu-mdf.jpg", categoria: "Troféus", subcategoria: "MDF" }
             ];
-            localStorage.setItem("prestige_products", JSON.stringify(products));
+            localStorage.setItem("prestige_products_v2", JSON.stringify(products));
         }
-        const savedCart = localStorage.getItem("prestige_cart");
+        const savedCart = localStorage.getItem("prestige_cart_v2");
         cart = savedCart ? JSON.parse(savedCart) : [];
         updateCartStorage();
     }
-    function updateCartStorage() { localStorage.setItem("prestige_cart", JSON.stringify(cart)); }
-    function saveProducts() { localStorage.setItem("prestige_products", JSON.stringify(products)); }
-    function getOrders() { return JSON.parse(localStorage.getItem("prestige_orders") || "[]"); }
-    function saveOrders(orders) { localStorage.setItem("prestige_orders", JSON.stringify(orders)); }
+    function updateCartStorage() { localStorage.setItem("prestige_cart_v2", JSON.stringify(cart)); }
+    function saveProducts() { localStorage.setItem("prestige_products_v2", JSON.stringify(products)); }
+    function getOrders() { return JSON.parse(localStorage.getItem("prestige_orders_v2") || "[]"); }
+    function saveOrders(orders) { localStorage.setItem("prestige_orders_v2", JSON.stringify(orders)); }
 
-    // ========== FRETE (mesmo cálculo anterior) ==========
+    // ========== FUNÇÕES DE RENDERIZAÇÃO (CATEGORIAS, SUBCATEGORIAS, PRODUTOS) ==========
+    function renderCategorias() {
+        const grid = document.getElementById("categorias-grid");
+        grid.innerHTML = categoriasList.map(cat => `<div class="card" data-categoria="${cat}"><strong>${cat}</strong></div>`).join("");
+        document.querySelectorAll("[data-categoria]").forEach(el => {
+            el.addEventListener("click", () => {
+                currentCategoria = el.dataset.categoria;
+                renderSubcategorias(currentCategoria);
+                showSection("subcategorias");
+            });
+        });
+    }
+
+    function renderSubcategorias(categoria) {
+        const subs = categoriasData[categoria] || [];
+        document.getElementById("subcategoria-titulo").innerText = categoria;
+        const grid = document.getElementById("subcategorias-grid");
+        grid.innerHTML = subs.map(sub => `<div class="card" data-subcategoria="${sub}"><strong>${sub}</strong></div>`).join("");
+        document.querySelectorAll("[data-subcategoria]").forEach(el => {
+            el.addEventListener("click", () => {
+                currentSubcategoria = el.dataset.subcategoria;
+                renderProdutos(currentCategoria, currentSubcategoria);
+                showSection("produtos");
+            });
+        });
+    }
+
+    function renderProdutos(categoria, subcategoria) {
+        const produtosFiltrados = products.filter(p => p.categoria === categoria && p.subcategoria === subcategoria);
+        document.getElementById("produtos-titulo").innerHTML = `${categoria} / ${subcategoria}`;
+        const grid = document.getElementById("produtos-grid");
+        if (produtosFiltrados.length === 0) {
+            // Se não houver produtos, permite criar um produto genérico personalizável
+            grid.innerHTML = `<div class="card" data-produto-nome="${subcategoria}" data-produto-preco="0" data-generico="true">
+                <strong>Personalizar ${subcategoria}</strong>
+                <p>Preço sob consulta</p>
+                <button class="btn-personalizar-generico">Personalizar</button>
+            </div>`;
+            document.querySelectorAll(".btn-personalizar-generico").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const card = btn.closest(".card");
+                    const nome = card.dataset.produtoNome;
+                    currentProduto = { id: null, name: `${subcategoria} - ${categoria}`, price: 0, isGenerico: true };
+                    showPersonalizacao();
+                });
+            });
+            return;
+        }
+        grid.innerHTML = produtosFiltrados.map(prod => `
+            <div class="produto-card">
+                <img src="${prod.image}" onerror="this.src='https://picsum.photos/id/1/200/200'">
+                <h3>${prod.name}</h3>
+                <p>R$ ${prod.price.toFixed(2)}</p>
+                <button class="btn-personalizar-produto" data-id="${prod.id}" data-nome="${prod.name}" data-preco="${prod.price}">Personalizar</button>
+            </div>
+        `).join("");
+        document.querySelectorAll(".btn-personalizar-produto").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const id = parseInt(btn.dataset.id);
+                const nome = btn.dataset.nome;
+                const preco = parseFloat(btn.dataset.preco);
+                currentProduto = { id, name: nome, price: preco, isGenerico: false };
+                showPersonalizacao();
+            });
+        });
+    }
+
+    // ========== PERSONALIZAÇÃO (DESCRIÇÃO + ANEXO) ==========
+    function showPersonalizacao() {
+        const container = document.getElementById("personalizacao-conteudo");
+        container.innerHTML = `
+            <h3>${currentProduto.name}</h3>
+            <p>Preço base: R$ ${currentProduto.price.toFixed(2)}</p>
+            <div class="form-group">
+                <label>Descrição / Especificações (ex: espessura, cor, texto, medidas):</label>
+                <textarea id="descricao-produto" rows="3" placeholder="Ex: Acrílico 5mm, cor azul, gravação com nome..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Anexar arquivo (arte, imagem, PDF):</label>
+                <input type="file" id="anexo-produto" accept="image/*,application/pdf">
+                <div id="preview-arquivo" style="margin-top: 5px;"></div>
+            </div>
+        `;
+        // Limpar personalização anterior
+        personalizacao = { descricao: "", arquivoBase64: "" };
+        const fileInput = document.getElementById("anexo-produto");
+        fileInput.addEventListener("change", function(e) {
+            if (this.files.length) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    personalizacao.arquivoBase64 = ev.target.result;
+                    document.getElementById("preview-arquivo").innerHTML = `<small>📎 Arquivo anexado: ${fileInput.files[0].name}</small>`;
+                };
+                reader.readAsDataURL(this.files[0]);
+            } else {
+                personalizacao.arquivoBase64 = "";
+                document.getElementById("preview-arquivo").innerHTML = "";
+            }
+        });
+        document.getElementById("confirmar-add-carrinho").onclick = () => {
+            personalizacao.descricao = document.getElementById("descricao-produto").value;
+            adicionarAoCarrinhoComPersonalizacao();
+        };
+        showSection("personalizacao");
+    }
+
+    function adicionarAoCarrinhoComPersonalizacao() {
+        const item = {
+            id: currentProduto.id ? currentProduto.id : Date.now(),
+            nome: currentProduto.name,
+            preco: currentProduto.price,
+            quantidade: 1,
+            descricao: personalizacao.descricao,
+            anexo: personalizacao.arquivoBase64,
+            dataAdicao: new Date().toISOString()
+        };
+        cart.push(item);
+        updateCartStorage();
+        renderCart();
+        showToast(`${item.nome} adicionado com personalização!`);
+        showSection("carrinho");
+    }
+
+    // ========== FUNÇÕES DO CARRINHO (COM PERSONALIZAÇÃO) ==========
+    function renderCart() {
+        const container = document.getElementById("carrinho-itens");
+        if (!container) return;
+        if (cart.length === 0) {
+            container.innerHTML = "<p>Carrinho vazio.</p>";
+            updateCartTotals();
+            return;
+        }
+        container.innerHTML = cart.map((item, idx) => `
+            <div class="cart-item">
+                <div style="flex:2">
+                    <strong>${item.nome}</strong><br>
+                    R$ ${item.preco.toFixed(2)} x ${item.quantidade} = R$ ${(item.preco * item.quantidade).toFixed(2)}<br>
+                    <small>Descrição: ${item.descricao || "Nenhuma"}</small><br>
+                    ${item.anexo ? `<a href="${item.anexo}" download="anexo_${idx}.${item.anexo.includes('pdf')?'pdf':'jpg'}">📎 Baixar anexo</a>` : ""}
+                </div>
+                <div>
+                    <button class="qty-down" data-idx="${idx}">-</button>
+                    <span>${item.quantidade}</span>
+                    <button class="qty-up" data-idx="${idx}">+</button>
+                    <button class="remove-item" data-idx="${idx}">🗑</button>
+                </div>
+            </div>
+        `).join("");
+        
+        document.querySelectorAll(".qty-down").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const idx = parseInt(btn.dataset.idx);
+                if (cart[idx].quantidade > 1) cart[idx].quantidade--;
+                else cart.splice(idx, 1);
+                updateCartStorage();
+                renderCart();
+                updateCartTotals();
+            });
+        });
+        document.querySelectorAll(".qty-up").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const idx = parseInt(btn.dataset.idx);
+                cart[idx].quantidade++;
+                updateCartStorage();
+                renderCart();
+                updateCartTotals();
+            });
+        });
+        document.querySelectorAll(".remove-item").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const idx = parseInt(btn.dataset.idx);
+                cart.splice(idx, 1);
+                updateCartStorage();
+                renderCart();
+                updateCartTotals();
+            });
+        });
+        updateCartTotals();
+    }
+
+    function updateCartTotals() {
+        const subtotal = cart.reduce((acc, i) => acc + (i.preco * i.quantidade), 0);
+        const total = subtotal + currentShipping;
+        const div = document.getElementById("resumo-carrinho");
+        if (div) {
+            div.innerHTML = `
+                <div>Subtotal: R$ ${subtotal.toFixed(2)}</div>
+                <div>Frete: R$ ${currentShipping.toFixed(2)} ${currentDeadline > 0 ? `(${currentDeadline} dias)` : ''}</div>
+                <div style="font-size:1.2rem;">Total: R$ ${total.toFixed(2)}</div>
+            `;
+        }
+    }
+
+    // ========== FRETE (MESMO CÓDIGO ANTERIOR) ==========
     function calcularFreteCorreios(cep, pesoKg, alt, larg, comp) {
         if (!cep.trim()) return { valor: 0, erro: "CEP não informado" };
         if (pesoKg <= 0) return { valor: 0, erro: "Peso inválido" };
@@ -154,98 +423,6 @@
         return { valor, prazo, erro: null };
     }
 
-    function updateCartTotals() {
-        const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-        const total = subtotal + currentShipping;
-        const div = document.getElementById("resumo-carrinho");
-        if (div) {
-            div.innerHTML = `
-                <div>Subtotal: R$ ${subtotal.toFixed(2)}</div>
-                <div>Frete: R$ ${currentShipping.toFixed(2)} ${currentDeadline > 0 ? `(${currentDeadline} dias)` : ''}</div>
-                <div style="font-size:1.2rem;">Total: R$ ${total.toFixed(2)}</div>
-            `;
-        }
-    }
-
-    function renderProducts() {
-        const grid = document.getElementById("produtos-grid");
-        if (!grid) return;
-        grid.innerHTML = products.map(prod => `
-            <div class="produto-card">
-                <img src="${prod.image}" alt="${prod.name}" onerror="this.src='https://picsum.photos/id/1/200/200'">
-                <h3>${prod.name}</h3>
-                <p>R$ ${prod.price.toFixed(2)}</p>
-                <button class="add-to-cart" data-id="${prod.id}" data-name="${prod.name}" data-price="${prod.price}" data-img="${prod.image}">Adicionar</button>
-            </div>
-        `).join("");
-        
-        document.querySelectorAll(".add-to-cart").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const id = parseInt(btn.dataset.id);
-                const name = btn.dataset.name;
-                const price = parseFloat(btn.dataset.price);
-                const image = btn.dataset.img;
-                const existing = cart.find(item => item.productId === id);
-                if (existing) existing.quantity++;
-                else cart.push({ productId: id, name, price, quantity: 1, image });
-                updateCartStorage();
-                renderCart();
-                showToast(`${name} adicionado!`);
-            });
-        });
-    }
-    
-    function renderCart() {
-        const container = document.getElementById("carrinho-itens");
-        if (!container) return;
-        if (cart.length === 0) {
-            container.innerHTML = "<p>Carrinho vazio.</p>";
-            updateCartTotals();
-            return;
-        }
-        container.innerHTML = cart.map((item, idx) => `
-            <div class="cart-item">
-                <span><strong>${item.name}</strong> R$ ${item.price.toFixed(2)} x ${item.quantity} = R$ ${(item.price * item.quantity).toFixed(2)}</span>
-                <div>
-                    <button class="qty-down" data-idx="${idx}">-</button>
-                    <span>${item.quantity}</span>
-                    <button class="qty-up" data-idx="${idx}">+</button>
-                    <button class="remove-item" data-idx="${idx}">🗑</button>
-                </div>
-            </div>
-        `).join("");
-        
-        document.querySelectorAll(".qty-down").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const idx = parseInt(btn.dataset.idx);
-                if (cart[idx].quantity > 1) cart[idx].quantity--;
-                else cart.splice(idx, 1);
-                updateCartStorage();
-                renderCart();
-                updateCartTotals();
-            });
-        });
-        document.querySelectorAll(".qty-up").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const idx = parseInt(btn.dataset.idx);
-                cart[idx].quantity++;
-                updateCartStorage();
-                renderCart();
-                updateCartTotals();
-            });
-        });
-        document.querySelectorAll(".remove-item").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const idx = parseInt(btn.dataset.idx);
-                cart.splice(idx, 1);
-                updateCartStorage();
-                renderCart();
-                updateCartTotals();
-            });
-        });
-        updateCartTotals();
-    }
-    
     function setupFrete() {
         const btn = document.getElementById("calcular-frete-btn");
         if (btn) {
@@ -274,10 +451,10 @@
             };
         }
     }
-    
+
     function finalizarCompra() {
         if (cart.length === 0) { alert("Carrinho vazio"); return; }
-        const subtotal = cart.reduce((a, i) => a + (i.price * i.quantity), 0);
+        const subtotal = cart.reduce((a, i) => a + (i.preco * i.quantidade), 0);
         const total = subtotal + currentShipping;
         const order = {
             id: Date.now(),
@@ -298,18 +475,18 @@
         renderCart();
         document.getElementById("cep").value = "";
         document.getElementById("resultado-frete").innerHTML = "";
-        showToast("Pedido finalizado!");
-        showSection("produtos");
+        showToast("Pedido finalizado! Obrigado.");
+        showSection("categorias");
         renderAdminOrders();
     }
-    
-    // Admin
+
+    // ========== ADMIN (ADAPTADO PARA CATEGORIAS) ==========
     function renderAdminProducts() {
         const container = document.getElementById("lista-produtos");
         if (!container) return;
         container.innerHTML = products.map(prod => `
             <div style="display:flex; justify-content:space-between; margin:5px 0; background:#fff; padding:8px; border-radius:8px;">
-                <span>${prod.name} - R$ ${prod.price.toFixed(2)}</span>
+                <span>${prod.name} - R$ ${prod.price.toFixed(2)} (${prod.categoria}/${prod.subcategoria})</span>
                 <button class="delete-prod" data-id="${prod.id}" style="background:#d9534f;">🗑 Excluir</button>
             </div>
         `).join("");
@@ -320,27 +497,36 @@
                     products = products.filter(p => p.id !== id);
                     saveProducts();
                     renderAdminProducts();
-                    renderProducts();
+                    // Recarregar produtos na navegação também
+                    if (currentCategoria && currentSubcategoria) renderProdutos(currentCategoria, currentSubcategoria);
                 }
             });
         });
     }
+
     function addProduct() {
         const name = document.getElementById("novo-nome").value.trim();
         const price = parseFloat(document.getElementById("novo-preco").value);
         let image = document.getElementById("nova-imagem").value.trim();
-        if (!name || isNaN(price)) { alert("Nome e preço válidos"); return; }
+        const categoria = document.getElementById("nova-categoria").value;
+        const subcategoria = document.getElementById("nova-subcategoria").value;
+        if (!name || isNaN(price) || !categoria || !subcategoria) {
+            alert("Preencha nome, preço, categoria e subcategoria.");
+            return;
+        }
         if (!image) image = "https://picsum.photos/id/42/200/200";
         const newId = Date.now();
-        products.push({ id: newId, name, price, image });
+        products.push({ id: newId, name, price, image, categoria, subcategoria });
         saveProducts();
         renderAdminProducts();
-        renderProducts();
+        // Se estiver visualizando a mesma categoria/subcategoria, atualiza
+        if (currentCategoria === categoria && currentSubcategoria === subcategoria) renderProdutos(categoria, subcategoria);
         document.getElementById("novo-nome").value = "";
         document.getElementById("novo-preco").value = "";
         document.getElementById("nova-imagem").value = "";
         showToast("Produto adicionado");
     }
+
     function renderAdminOrders() {
         const container = document.getElementById("lista-pedidos");
         if (!container) return;
@@ -350,20 +536,34 @@
             <div style="background:#fff; padding:10px; border-radius:8px; margin-bottom:8px;">
                 <strong>Pedido #${order.id}</strong> - ${order.data}<br>
                 Total: R$ ${order.total.toFixed(2)} (frete: R$ ${order.frete.toFixed(2)}, prazo: ${order.prazo || '?'} dias)<br>
-                Itens: ${order.itens.map(i => `${i.name} x${i.quantity}`).join(", ")}
+                Itens: ${order.itens.map(i => `${i.nome} x${i.quantidade} ${i.descricao ? `(obs: ${i.descricao.substring(0,30)})` : ''}`).join(", ")}
             </div>
         `).join("");
     }
-    
-    function showSection(section) {
-        document.getElementById("produtos-section").classList.remove("active-section");
-        document.getElementById("carrinho-section").classList.remove("active-section");
-        document.getElementById("admin-section").classList.remove("active-section");
-        document.getElementById(`${section}-section`).classList.add("active-section");
-        if (section === "carrinho") renderCart();
-        if (section === "admin") { renderAdminProducts(); renderAdminOrders(); }
+
+    function populateAdminSelects() {
+        const catSelect = document.getElementById("nova-categoria");
+        const subSelect = document.getElementById("nova-subcategoria");
+        catSelect.innerHTML = '<option value="">Selecione a categoria</option>' + categoriasList.map(cat => `<option value="${cat}">${cat}</option>`).join("");
+        catSelect.addEventListener("change", () => {
+            const selectedCat = catSelect.value;
+            const subs = categoriasData[selectedCat] || [];
+            subSelect.innerHTML = '<option value="">Selecione a subcategoria</option>' + subs.map(sub => `<option value="${sub}">${sub}</option>`).join("");
+        });
     }
-    
+
+    // ========== NAVEGAÇÃO ==========
+    function showSection(sectionId) {
+        const sections = ["categorias", "subcategorias", "produtos", "personalizacao", "carrinho", "admin"];
+        sections.forEach(id => {
+            const el = document.getElementById(`${id}-section`);
+            if (el) el.classList.remove("active-section");
+        });
+        document.getElementById(`${sectionId}-section`).classList.add("active-section");
+        if (sectionId === "carrinho") renderCart();
+        if (sectionId === "admin") { renderAdminProducts(); renderAdminOrders(); }
+    }
+
     function setupNavigation() {
         document.querySelectorAll("[data-nav]").forEach(link => {
             link.addEventListener("click", () => {
@@ -372,12 +572,15 @@
             });
         });
         document.querySelectorAll("[data-voltar]").forEach(btn => {
-            btn.addEventListener("click", () => showSection("produtos"));
+            btn.addEventListener("click", () => {
+                const to = btn.dataset.voltar;
+                showSection(to);
+            });
         });
         document.getElementById("finalizar-compra").addEventListener("click", finalizarCompra);
         document.getElementById("btn-add-produto").addEventListener("click", addProduct);
     }
-    
+
     function showToast(msg) {
         const div = document.createElement("div");
         div.innerText = msg;
@@ -392,1291 +595,16 @@
         document.body.appendChild(div);
         setTimeout(() => div.remove(), 2000);
     }
-    
+
     function init() {
         loadData();
-        renderProducts();
+        renderCategorias();
         renderCart();
         setupFrete();
         setupNavigation();
+        populateAdminSelects();
         updateCartTotals();
     }
-    init();
-</script>
-</body>
-</html>        header nav a {
-            margin-left: 1rem;
-            color: #fff;
-            cursor: pointer;
-        }
-        header nav a:hover {
-            color: #f0a500;
-        }
-        #banner img {
-            width: 100%;
-            max-height: 400px;
-            object-fit: cover;
-            border-radius: 12px;
-            transition: transform 0.5s;
-        }
-        .grid-produtos {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.5rem;
-            padding: 2rem;
-        }
-        .produto-card {
-            background: #fff;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .produto-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-        .produto-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: contain;
-            border-radius: 8px;
-            background: #fafafa;
-        }
-        .produto-card h3 {
-            margin: 1rem 0 0.5rem;
-            font-size: 1.1rem;
-        }
-        .produto-card p {
-            font-weight: bold;
-            color: #f05a28;
-        }
-        .produto-card button {
-            margin-top: 0.5rem;
-            padding: 0.5rem 1rem;
-            border: none;
-            background: #0077cc;
-            color: #fff;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .produto-card button:hover {
-            background: #005fa3;
-        }
-        #carrinho-itens {
-            background: #fff;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #eee;
-            flex-wrap: wrap;
-        }
-        .cart-item-info { flex: 2; }
-        .cart-item-qty { display: flex; align-items: center; gap: 8px; }
-        .cart-item-qty button { padding: 4px 8px; background: #e0e0e0; color: #333; }
-        .remove-item { background: #d9534f; padding: 4px 10px; font-size: 0.75rem; }
-        #frete {
-            background: #fef7e0;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-        .frete-campos {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 15px;
-            align-items: flex-end;
-        }
-        .frete-campos div {
-            flex: 1;
-            min-width: 100px;
-        }
-        .frete-campos label {
-            display: block;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 4px;
-        }
-        .frete-campos input {
-            width: 100%;
-            padding: 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-        button {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            border: none;
-            background: #0077cc;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        button:hover {
-            background: #005fa3;
-            transform: scale(1.02);
-        }
-        .total-carrinho {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 12px;
-            margin: 15px 0;
-            font-weight: bold;
-        }
-        .admin-form {
-            background: #fff;
-            padding: 1rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-        }
-        .section {
-            display: none;
-            animation: fade 0.2s ease;
-        }
-        .active-section {
-            display: block;
-        }
-        @keyframes fade {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .back-button {
-            background: #6c757d;
-            margin-bottom: 1rem;
-            display: inline-block;
-        }
-        @media (max-width: 768px) {
-            header { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .grid-produtos { grid-template-columns: 1fr 1fr; }
-        }
-        @media (max-width: 480px) {
-            .grid-produtos { grid-template-columns: 1fr; }
-            .frete-campos div { min-width: 100%; }
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="logo"><strong>📦 CODEX STORE</strong></div>
-    <nav>
-        <a data-nav="produtos">🏠 Produtos</a>
-        <a data-nav="carrinho">🛒 Carrinho</a>
-        <a data-nav="admin">🔧 Admin</a>
-    </nav>
-</header>
-
-<div id="banner">
-    <img src="https://picsum.photos/id/20/1200/400" alt="Banner Codex">
-</div>
-
-<!-- Seção Produtos -->
-<section id="produtos-section" class="section active-section">
-    <div class="grid-produtos" id="produtos-grid"></div>
-</section>
-
-<!-- Seção Carrinho com frete por peso e medidas -->
-<section id="carrinho-section" class="section">
-    <div style="padding: 1rem 2rem;">
-        <h2>🛍️ Seu Carrinho</h2>
-        <div id="carrinho-itens"></div>
-        
-        <div id="frete">
-            <h3>✈️ Calcular Frete (Correios - simulado)</h3>
-            <div class="frete-campos">
-                <div>
-                    <label>CEP de destino</label>
-                    <input type="text" id="cep" placeholder="Ex: 01000-000">
-                </div>
-                <div>
-                    <label>Peso total (kg)</label>
-                    <input type="number" id="peso" step="0.1" value="1.0" placeholder="kg">
-                </div>
-                <div>
-                    <label>Altura (cm)</label>
-                    <input type="number" id="altura" step="0.5" value="10" placeholder="cm">
-                </div>
-                <div>
-                    <label>Largura (cm)</label>
-                    <input type="number" id="largura" step="0.5" value="20" placeholder="cm">
-                </div>
-                <div>
-                    <label>Comprimento (cm)</label>
-                    <input type="number" id="comprimento" step="0.5" value="30" placeholder="cm">
-                </div>
-                <div>
-                    <button id="calcular-frete-btn">📦 Calcular Frete</button>
-                </div>
-            </div>
-            <div id="resultado-frete" style="font-weight: bold; margin-top: 10px;"></div>
-        </div>
-        
-        <div id="resumo-carrinho" class="total-carrinho"></div>
-        <button id="finalizar-compra">✅ Finalizar Compra</button>
-        <button class="back-button" data-voltar="produtos">← Voltar às compras</button>
-    </div>
-</section>
-
-<!-- Seção Admin (simplificada, igual ao anterior) -->
-<section id="admin-section" class="section">
-    <div style="padding: 1rem 2rem;">
-        <h2>🛠️ Painel Administrativo</h2>
-        <div class="admin-form">
-            <h4>➕ Adicionar Produto</h4>
-            <input type="text" id="novo-nome" placeholder="Nome">
-            <input type="number" id="novo-preco" placeholder="Preço">
-            <input type="text" id="nova-imagem" placeholder="URL imagem">
-            <button id="btn-add-produto">Adicionar</button>
-        </div>
-        <div id="lista-produtos"></div>
-        <h3>📋 Pedidos</h3>
-        <div id="lista-pedidos"></div>
-    </div>
-</section>
-
-<script>
-    // ========== DADOS ==========
-    let products = [];
-    let cart = [];          // { productId, name, price, quantity, image }
-    let currentShipping = 0;
-    let currentDeadline = 0; // prazo em dias
-
-    // Carregar dados do localStorage
-    function loadData() {
-        const storedProducts = localStorage.getItem("codex_products");
-        if(storedProducts) {
-            products = JSON.parse(storedProducts);
-        } else {
-            products = [
-                { id: 1, name: "Camiseta Codex", price: 49.90, image: "https://picsum.photos/id/1/200/200", description: "Camiseta 100% algodão." },
-                { id: 2, name: "Caneca Codex", price: 29.90, image: "https://picsum.photos/id/2/200/200", description: "Caneca térmica." },
-                { id: 3, name: "Caderno Codex", price: 39.90, image: "https://picsum.photos/id/3/200/200", description: "Caderno capa dura." },
-                { id: 4, name: "Mochila Codex", price: 129.90, image: "https://picsum.photos/id/4/200/200", description: "Mochila resistente." }
-            ];
-            saveProducts();
-        }
-        const storedCart = localStorage.getItem("codex_cart");
-        cart = storedCart ? JSON.parse(storedCart) : [];
-        updateCartStorage();
-    }
-    function saveProducts() { localStorage.setItem("codex_products", JSON.stringify(products)); }
-    function updateCartStorage() { localStorage.setItem("codex_cart", JSON.stringify(cart)); }
-    function getOrders() { return JSON.parse(localStorage.getItem("codex_orders") || "[]"); }
-    function saveOrders(orders) { localStorage.setItem("codex_orders", JSON.stringify(orders)); }
-
-    // ========== FUNÇÃO DE FRETE SIMULADA (CORREIOS - PESO x CUBAGEM) ==========
-    function calcularFreteCorreios(cepDestino, pesoKg, alturaCm, larguraCm, comprimentoCm) {
-        // Validação básica
-        if (!cepDestino || cepDestino.trim() === "") return { valor: 0, prazo: 0, erro: "CEP não informado" };
-        if (pesoKg <= 0) return { valor: 0, prazo: 0, erro: "Peso inválido" };
-        
-        // Cálculo do peso cúbico (kg) - fórmula Correios: (altura * largura * comprimento) / 6000
-        const volume = alturaCm * larguraCm * comprimentoCm;
-        const pesoCubico = volume / 6000;
-        const pesoFinal = Math.max(pesoKg, pesoCubico); // usa o maior entre real e cubado
-        
-        // Simulação de frete com base no CEP (apenas para variar um pouco)
-        let cepNum = parseInt(cepDestino.replace(/\D/g, '')) || 0;
-        let distanciaFactor = 1;
-        if (cepNum > 0) {
-            const regiao = cepNum % 10;
-            if (regiao < 3) distanciaFactor = 0.9;
-            else if (regiao < 6) distanciaFactor = 1.2;
-            else distanciaFactor = 1.5;
-        }
-        
-        // Fórmula base: R$ 7,00 + (pesoFinal * 1,8) * fatorDistancia
-        let valor = 7.0 + (pesoFinal * 1.8) * distanciaFactor;
-        valor = Math.max(valor, 9.9); // mínimo de R$ 9,90
-        valor = parseFloat(valor.toFixed(2));
-        
-        // Prazo: 2 a 10 dias úteis baseado no peso e distância
-        let prazo = Math.floor(2 + (pesoFinal * 0.5) + (distanciaFactor * 1.5));
-        prazo = Math.min(prazo, 12);
-        prazo = Math.max(prazo, 2);
-        
-        return { valor, prazo, erro: null };
-    }
-    
-    // Atualiza o resumo do carrinho com frete
-    function updateCartTotals() {
-        const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-        const total = subtotal + currentShipping;
-        const resumoDiv = document.getElementById("resumo-carrinho");
-        if(resumoDiv) {
-            resumoDiv.innerHTML = `
-                <div>Subtotal: R$ ${subtotal.toFixed(2)}</div>
-                <div>Frete: R$ ${currentShipping.toFixed(2)} ${currentDeadline > 0 ? `(${currentDeadline} dias úteis)` : ''}</div>
-                <div style="font-size:1.2rem; margin-top:8px;">Total: R$ ${total.toFixed(2)}</div>
-            `;
-        }
-    }
-    
-    // Evento do botão Calcular Frete
-    function setupFreteListener() {
-        const btn = document.getElementById("calcular-frete-btn");
-        if(btn) {
-            btn.onclick = () => {
-                const cep = document.getElementById("cep").value;
-                const peso = parseFloat(document.getElementById("peso").value);
-                const altura = parseFloat(document.getElementById("altura").value);
-                const largura = parseFloat(document.getElementById("largura").value);
-                const comprimento = parseFloat(document.getElementById("comprimento").value);
-                
-                if(isNaN(peso) || isNaN(altura) || isNaN(largura) || isNaN(comprimento)) {
-                    alert("Preencha todos os campos de peso e medidas corretamente.");
-                    return;
-                }
-                
-                const resultado = calcularFreteCorreios(cep, peso, altura, largura, comprimento);
-                if(resultado.erro) {
-                    document.getElementById("resultado-frete").innerHTML = `<span style="color:red;">❌ ${resultado.erro}</span>`;
-                    currentShipping = 0;
-                    currentDeadline = 0;
-                } else {
-                    currentShipping = resultado.valor;
-                    currentDeadline = resultado.prazo;
-                    document.getElementById("resultado-frete").innerHTML = `
-                        <span style="color:green;">✅ Frete: R$ ${resultado.valor.toFixed(2)} | Prazo: ${resultado.prazo} dias úteis</span>
-                    `;
-                }
-                updateCartTotals();
-            };
-        }
-    }
-    
-    // ========== RENDERIZAÇÃO PRODUTOS E CARRINHO ==========
-    function renderProducts() {
-        const grid = document.getElementById("produtos-grid");
-        if(!grid) return;
-        if(products.length === 0) {
-            grid.innerHTML = "<p>Nenhum produto. Adicione no Admin.</p>";
-            return;
-        }
-        grid.innerHTML = products.map(prod => `
-            <div class="produto-card" data-id="${prod.id}">
-                <img src="${prod.image || 'https://picsum.photos/id/20/200/200'}" alt="${prod.name}">
-                <h3>${prod.name}</h3>
-                <p>R$ ${prod.price.toFixed(2)}</p>
-                <button class="add-to-cart" data-id="${prod.id}" data-name="${prod.name}" data-price="${prod.price}" data-img="${prod.image}">🛒 Adicionar</button>
-            </div>
-        `).join("");
-        
-        document.querySelectorAll(".add-to-cart").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const id = parseInt(btn.dataset.id);
-                const name = btn.dataset.name;
-                const price = parseFloat(btn.dataset.price);
-                const image = btn.dataset.img;
-                addToCart(id, name, price, image);
-            });
-        });
-    }
-    
-    function addToCart(productId, name, price, image) {
-        const existing = cart.find(item => item.productId === productId);
-        if(existing) existing.quantity++;
-        else cart.push({ productId, name, price, quantity: 1, image });
-        updateCartStorage();
-        renderCart();
-        showToast(`✔️ ${name} adicionado`);
-    }
-    
-    function renderCart() {
-        const container = document.getElementById("carrinho-itens");
-        if(!container) return;
-        if(cart.length === 0) {
-            container.innerHTML = "<p>Carrinho vazio.</p>";
-            updateCartTotals();
-            return;
-        }
-        container.innerHTML = cart.map((item, idx) => `
-            <div class="cart-item">
-                <div class="cart-item-info">
-                    <strong>${item.name}</strong> <br>
-                    R$ ${item.price.toFixed(2)} x ${item.quantity} = R$ ${(item.price * item.quantity).toFixed(2)}
-                </div>
-                <div class="cart-item-qty">
-                    <button class="qty-down" data-idx="${idx}">-</button>
-                    <span>${item.quantity}</span>
-                    <button class="qty-up" data-idx="${idx}">+</button>
-                    <button class="remove-item" data-idx="${idx}">🗑</button>
-                </div>
-            </div>
-        `).join("");
-        
-        document.querySelectorAll(".qty-down").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const idx = parseInt(btn.dataset.idx);
-                if(cart[idx].quantity > 1) cart[idx].quantity--;
-                else cart.splice(idx, 1);
-                updateCartStorage();
-                renderCart();
-                updateCartTotals();
-            });
-        });
-        document.querySelectorAll(".qty-up").forEach(btn => {
-            const idx = parseInt(btn.dataset.idx);
-            btn.addEventListener("click", () => {
-                cart[idx].quantity++;
-                updateCartStorage();
-                renderCart();
-                updateCartTotals();
-            });
-        });
-        document.querySelectorAll(".remove-item").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const idx = parseInt(btn.dataset.idx);
-                cart.splice(idx, 1);
-                updateCartStorage();
-                renderCart();
-                updateCartTotals();
-            });
-        });
-        updateCartTotals();
-    }
-    
-    function finalizarCompra() {
-        if(cart.length === 0) { alert("Carrinho vazio"); return; }
-        const subtotal = cart.reduce((a,i) => a + (i.price * i.quantity), 0);
-        const total = subtotal + currentShipping;
-        const order = {
-            id: Date.now(),
-            data: new Date().toLocaleString(),
-            itens: JSON.parse(JSON.stringify(cart)),
-            subtotal,
-            frete: currentShipping,
-            prazo: currentDeadline,
-            total,
-            status: "Aprovado"
-        };
-        const orders = getOrders();
-        orders.unshift(order);
-        saveOrders(orders);
-        cart = [];
-        currentShipping = 0;
-        currentDeadline = 0;
-        updateCartStorage();
-        renderCart();
-        document.getElementById("cep").value = "";
-        document.getElementById("resultado-frete").innerHTML = "";
-        showToast("✅ Pedido finalizado!");
-        showSection("produtos");
-        renderAdminOrders();
-    }
-    
-    // Admin
-    function renderAdminProducts() {
-        const container = document.getElementById("lista-produtos");
-        if(!container) return;
-        container.innerHTML = products.map(prod => `
-            <div>
-                <span>${prod.name} - R$ ${prod.price.toFixed(2)}</span>
-                <div>
-                    <button class="delete-prod" data-id="${prod.id}">🗑 Excluir</button>
-                </div>
-            </div>
-        `).join("");
-        document.querySelectorAll(".delete-prod").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const id = parseInt(btn.dataset.id);
-                if(confirm("Remover?")) {
-                    products = products.filter(p => p.id !== id);
-                    saveProducts();
-                    renderAdminProducts();
-                    renderProducts();
-                }
-            });
-        });
-    }
-    function addProduct() {
-        const name = document.getElementById("novo-nome").value.trim();
-        const price = parseFloat(document.getElementById("novo-preco").value);
-        const image = docu
-        .produto-card {
-            background: #fff;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .produto-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-        .produto-card img {
-            width: 100%;
-            height: 180px;
-            object-fit: contain;
-            border-radius: 8px;
-            background: #fafafa;
-        }
-        .produto-card h3 {
-            margin: 1rem 0 0.5rem;
-            font-size: 1.1rem;
-            color: #111;
-        }
-        .produto-card p {
-            font-weight: bold;
-            color: #f05a28;
-        }
-        .produto-card button {
-            margin-top: 0.5rem;
-            padding: 0.5rem 1rem;
-            border: none;
-            background: #0077cc;
-            color: #fff;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-        .produto-card button:hover {
-            background: #005fa3;
-        }
-
-        #carrinho-itens {
-            background: #fff;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-        }
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #eee;
-            flex-wrap: wrap;
-        }
-        .cart-item-info {
-            flex: 2;
-        }
-        .cart-item-qty {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .cart-item-qty button {
-            padding: 4px 8px;
-            font-size: 0.8rem;
-            background: #e0e0e0;
-            color: #333;
-        }
-        .cart-item-qty button:hover {
-            background: #ccc;
-        }
-        .remove-item {
-            background: #d9534f;
-            padding: 4px 10px;
-            font-size: 0.75rem;
-        }
-        .remove-item:hover {
-            background: #c9302c;
-        }
-
-        #frete {
-            margin-bottom: 1rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-        #frete input {
-            padding: 0.5rem;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            flex: 1;
-            min-width: 150px;
-        }
-        #frete button {
-            padding: 0.5rem 1rem;
-            border: none;
-            background: #f05a28;
-            color: #fff;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        #frete button:hover {
-            background: #c14720;
-        }
-
-        button {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            border: none;
-            background: #0077cc;
-            color: #fff;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        button:hover {
-            background: #005fa3;
-            transform: scale(1.02);
-        }
-
-        /* Painel Admin */
-        #lista-produtos div, #lista-pedidos div {
-            background: #fff;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        input[type=text], input[type=number] {
-            padding: 0.5rem;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            margin-right: 0.5rem;
-            width: 200px;
-        }
-
-        #detalhe-produto img {
-            width: 100%;
-            max-width: 400px;
-            margin: 1rem auto;
-            display: block;
-            border-radius: 12px;
-        }
-        #detalhe-produto h2 {
-            margin-top: 1rem;
-            font-size: 1.5rem;
-            color: #111;
-        }
-        #detalhe-produto p {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #f05a28;
-        }
-
-        @media (max-width: 768px) {
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            .grid-produtos {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-        @media (max-width: 480px) {
-            .grid-produtos {
-                grid-template-columns: 1fr;
-            }
-            input[type=text], input[type=number] {
-                width: 100%;
-                margin-bottom: 0.5rem;
-            }
-            .cart-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-        }
-
-        /* seções */
-        .section {
-            display: none;
-            animation: fade 0.2s ease;
-        }
-        .active-section {
-            display: block;
-        }
-        @keyframes fade {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .back-button {
-            background: #6c757d;
-            margin-bottom: 1rem;
-            display: inline-block;
-        }
-        .total-carrinho {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 12px;
-            margin: 15px 0;
-            font-weight: bold;
-        }
-        .admin-form {
-            background: #fff;
-            padding: 1rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-        }
-        .admin-form input, .admin-form textarea {
-            width: 100%;
-            max-width: 300px;
-            margin-bottom: 8px;
-        }
-        .btn-danger {
-            background: #d9534f;
-        }
-        .btn-danger:hover {
-            background: #c9302c;
-        }
-        .btn-warning {
-            background: #f0ad4e;
-            color: #111;
-        }
-        .btn-warning:hover {
-            background: #ec971f;
-        }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="logo"><strong>⚡ CODEX STORE</strong></div>
-    <nav>
-        <a data-nav="produtos">🏠 Produtos</a>
-        <a data-nav="carrinho">🛒 Carrinho</a>
-        <a data-nav="admin">🔧 Admin</a>
-    </nav>
-</header>
-
-<!-- Banner -->
-<div id="banner">
-    <img src="https://picsum.photos/id/20/1200/400" alt="Banner Codex">
-</div>
-
-<!-- Seção Produtos (Grid) -->
-<section id="produtos-section" class="section active-section">
-    <div class="grid-produtos" id="produtos-grid"></div>
-</section>
-
-<!-- Seção Carrinho -->
-<section id="carrinho-section" class="section">
-    <div style="padding: 1rem 2rem;">
-        <h2>🛍️ Seu Carrinho</h2>
-        <div id="carrinho-itens"></div>
-        <div id="frete">
-            <input type="text" id="cep-input" placeholder="Digite seu CEP (ex: 01000-000)">
-            <button id="calcular-frete">📦 Calcular Frete</button>
-        </div>
-        <div id="resumo-carrinho" class="total-carrinho"></div>
-        <button id="finalizar-compra">✅ Finalizar Compra</button>
-        <button class="back-button" data-voltar="produtos">← Voltar às compras</button>
-    </div>
-</section>
-
-<!-- Seção Admin -->
-<section id="admin-section" class="section">
-    <div style="padding: 1rem 2rem;">
-        <h2>🛠️ Painel Administrativo</h2>
-        
-        <h3>📦 Gerenciar Produtos</h3>
-        <div class="admin-form">
-            <h4>➕ Adicionar Produto</h4>
-            <input type="text" id="novo-nome" placeholder="Nome do produto">
-            <input type="number" id="novo-preco" placeholder="Preço (R$)">
-            <input type="text" id="nova-imagem" placeholder="URL da imagem">
-            <input type="text" id="nova-desc" placeholder="Descrição curta">
-            <button id="btn-add-produto">Adicionar Produto</button>
-        </div>
-        
-        <div class="admin-form">
-            <h4>✏️ Editar Produto (clique em editar na lista)</h4>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <input type="text" id="edit-id" placeholder="ID do produto" readonly style="background:#eee;">
-                <input type="text" id="edit-nome" placeholder="Nome">
-                <input type="number" id="edit-preco" placeholder="Preço">
-                <input type="text" id="edit-imagem" placeholder="URL imagem">
-                <input type="text" id="edit-desc" placeholder="Descrição">
-                <button id="btn-atualizar-produto">Salvar Alterações</button>
-                <button id="btn-cancelar-edit" class="btn-warning">Cancelar</button>
-            </div>
-        </div>
-        
-        <div id="lista-produtos"></div>
-        
-        <h3>📋 Pedidos Realizados</h3>
-        <div id="lista-pedidos"></div>
-    </div>
-</section>
-
-<!-- Seção Detalhe do Produto -->
-<section id="detalhe-section" class="section">
-    <div style="padding: 1rem 2rem;" id="detalhe-produto">
-        <!-- Conteúdo dinâmico -->
-        <button class="back-button" data-voltar="produtos">← Voltar aos produtos</button>
-    </div>
-</section>
-
-<script>
-    // ---------- DADOS E INICIALIZAÇÃO ----------
-    let products = [];
-    let cart = [];          // { productId, name, price, quantity, image }
-    let currentShipping = 0;
-    let lastCep = "";
-
-    // Carregar dados do localStorage
-    function loadData() {
-        const storedProducts = localStorage.getItem("codex_products");
-        if(storedProducts) {
-            products = JSON.parse(storedProducts);
-        } else {
-            // Produtos iniciais
-            products = [
-                { id: 1, name: "Camiseta Codex", price: 49.90, image: "https://picsum.photos/id/1/200/200", description: "Camiseta 100% algodão, design exclusivo Codex." },
-                { id: 2, name: "Caneca Codex", price: 29.90, image: "https://picsum.photos/id/2/200/200", description: "Caneca térmica com logo Codex, 350ml." },
-                { id: 3, name: "Caderno Codex", price: 39.90, image: "https://picsum.photos/id/3/200/200", description: "Caderno espiral capa dura, 100 folhas." },
-                { id: 4, name: "Mochila Codex", price: 129.90, image: "https://picsum.photos/id/4/200/200", description: "Mochila resistente, vários compartimentos." }
-            ];
-            saveProducts();
-        }
-        
-        const storedCart = localStorage.getItem("codex_cart");
-        if(storedCart) {
-            cart = JSON.parse(storedCart);
-        } else {
-            cart = [];
-        }
-        updateCartStorage();
-    }
-    
-    function saveProducts() {
-        localStorage.setItem("codex_products", JSON.stringify(products));
-    }
-    
-    function updateCartStorage() {
-        localStorage.setItem("codex_cart", JSON.stringify(cart));
-    }
-    
-    function saveOrders(orders) {
-        localStorage.setItem("codex_orders", JSON.stringify(orders));
-    }
-    
-    function getOrders() {
-        const stored = localStorage.getItem("codex_orders");
-        return stored ? JSON.parse(stored) : [];
-    }
-    
-    // ---------- FUNÇÕES DE RENDERIZAÇÃO ----------
-    function renderProducts() {
-        const grid = document.getElementById("produtos-grid");
-        if(!grid) return;
-        if(products.length === 0) {
-            grid.innerHTML = "<p style='text-align:center'>Nenhum produto cadastrado. Vá ao Admin e adicione!</p>";
-            return;
-        }
-        grid.innerHTML = products.map(prod => `
-            <div class="produto-card" data-id="${prod.id}">
-                <img src="${prod.image || 'https://picsum.photos/id/20/200/200'}" alt="${prod.name}" loading="lazy">
-                <h3>${prod.name}</h3>
-                <p>R$ ${prod.price.toFixed(2)}</p>
-                <button class="add-to-cart" data-id="${prod.id}" data-name="${prod.name}" data-price="${prod.price}" data-img="${prod.image}">🛒 Adicionar</button>
-                <button class="view-detail" data-id="${prod.id}">🔍 Ver detalhes</button>
-            </div>
-        `).join("");
-        
-        // Eventos para os botões
-        document.querySelectorAll(".add-to-cart").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                const name = btn.dataset.name;
-                const price = parseFloat(btn.dataset.price);
-                const image = btn.dataset.img;
-                addToCart(id, name, price, image);
-            });
-        });
-        
-        document.querySelectorAll(".view-detail").forEach(btn => {
-            btn.addEventListener("click", (e) => {
-                const id = parseInt(btn.dataset.id);
-                showProductDetail(id);
-            });
-        });
-    }
-    
-    function addToCart(productId, name, price, image) {
-        const existing = cart.find(item => item.productId === productId);
-        if(existing) {
-            existing.quantity += 1;
-        } else {
-            cart.push({ productId, name, price, quantity: 1, image });
-        }
-        updateCartStorage();
-        renderCart();
-        showToast(`✔️ ${name} adicionado ao carrinho!`);
-        // Se o carrinho estiver visível, atualiza; se não, apenas armazena
-    }
-    
-    function renderCart() {
-        const container = document.getElementById("carrinho-itens");
-        if(!container) return;
-        if(cart.length === 0) {
-            container.innerHTML = "<p>Carrinho vazio. Adicione produtos incríveis!</p>";
-            document.getElementById("resumo-carrinho").innerHTML = "";
-            return;
-        }
-        
-        container.innerHTML = cart.map((item, idx) => `
-            <div class="cart-item">
-                <div class="cart-item-info">
-                    <strong>${item.name}</strong> <br>
-                    R$ ${item.price.toFixed(2)} x ${item.quantity} = R$ ${(item.price * item.quantity).toFixed(2)}
-                </div>
-                <div class="cart-item-qty">
-                    <button class="qty-down" data-idx="${idx}">-</button>
-                    <span>${item.quantity}</span>
-                    <button class="qty-up" data-idx="${idx}">+</button>
-                    <button class="remove-item" data-idx="${idx}">🗑 Remover</button>
-                </div>
-            </div>
-        `).join("");
-        
-        // eventos quantidade
-        document.querySelectorAll(".qty-down").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const idx = parseInt(btn.dataset.idx);
-                if(cart[idx].quantity > 1) cart[idx].quantity--;
-                else cart.splice(idx, 1);
-                updateCartStorage();
-                renderCart();
-                updateCartTotals();
-            });
-        });
-        document.querySelectorAll(".qty-up").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const idx = parseInt(btn.dataset.idx);
-                cart[idx].quantity++;
-                updateCartStorage();
-                renderCart();
-                updateCartTotals();
-            });
-        });
-        document.querySelectorAll(".remove-item").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const idx = parseInt(btn.dataset.idx);
-                cart.splice(idx, 1);
-                updateCartStorage();
-                renderCart();
-                updateCartTotals();
-            });
-        });
-        
-        updateCartTotals();
-    }
-    
-    function updateCartTotals() {
-        const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-        const total = subtotal + currentShipping;
-        const resumoDiv = document.getElementById("resumo-carrinho");
-        if(resumoDiv) {
-            resumoDiv.innerHTML = `
-                <div>Subtotal: R$ ${subtotal.toFixed(2)}</div>
-                <div>Frete: R$ ${currentShipping.toFixed(2)}</div>
-                <div style="font-size:1.2rem; margin-top:8px;">Total: R$ ${total.toFixed(2)}</div>
-            `;
-        }
-    }
-    
-    // Cálculo de frete baseado em CEP (simulação)
-    function calcularFrete(cep) {
-        if(!cep || cep.trim() === "") return 15.00;
-        const clean = cep.replace(/\D/g, '');
-        if(clean.length === 0) return 15.00;
-        const firstDigit = clean.charAt(0);
-        if(firstDigit === '0') return 12.00;
-        if(firstDigit === '1') return 10.00;
-        if(firstDigit === '2' || firstDigit === '3') return 18.00;
-        if(firstDigit === '8' || firstDigit === '9') return 25.00;
-        return 14.90;
-    }
-    
-    function setupFreteListener() {
-        const btnFrete = document.getElementById("calcular-frete");
-        if(btnFrete) {
-            btnFrete.onclick = () => {
-                const cepInput = document.getElementById("cep-input").value;
-                lastCep = cepInput;
-                currentShipping = calcularFrete(cepInput);
-                updateCartTotals();
-                showToast(`Frete calculado: R$ ${currentShipping.toFixed(2)}`);
-            };
-        }
-    }
-    
-    function finalizarCompra() {
-        if(cart.length === 0) {
-            alert("Seu carrinho está vazio!");
-            return;
-        }
-        const subtotal = cart.reduce((acc, i) => acc + (i.price * i.quantity), 0);
-        const total = subtotal + currentShipping;
-        const order = {
-            id: Date.now(),
-            data: new Date().toLocaleString(),
-            itens: JSON.parse(JSON.stringify(cart)),
-            subtotal: subtotal,
-            frete: currentShipping,
-            total: total,
-            status: "Aprovado"
-        };
-        const orders = getOrders();
-        orders.unshift(order);
-        saveOrders(orders);
-        // limpar carrinho e frete
-        cart = [];
-        currentShipping = 0;
-        updateCartStorage();
-        renderCart();
-        if(document.getElementById("cep-input")) document.getElementById("cep-input").value = "";
-        showToast("✅ Compra finalizada! Obrigado. Pedido registrado.");
-        // atualizar admin se estiver visivel
-        if(document.getElementById("admin-section").classList.contains("active-section")) {
-            renderAdminOrders();
-        }
-        // voltar para produtos
-        showSection("produtos");
-    }
-    
-    // Detalhe do produto
-    function showProductDetail(productId) {
-        const product = products.find(p => p.id === productId);
-        if(!product) return;
-        const detailDiv = document.getElementById("detalhe-produto");
-        if(detailDiv) {
-            detailDiv.innerHTML = `
-                <button class="back-button" data-voltar="produtos">← Voltar aos produtos</button>
-                <div style="text-align:center;">
-                    <img src="${product.image || 'https://picsum.photos/id/20/400/300'}" alt="${product.name}">
-                    <h2>${product.name}</h2>
-                    <p>Preço: R$ ${product.price.toFixed(2)}</p>
-                    <p style="font-weight:normal; color:#555;">${product.description || "Produto de alta qualidade da Codex."}</p>
-                    <button id="detalhe-add-carrinho" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-img="${product.image}">🛒 Adicionar ao Carrinho</button>
-                </div>
-            `;
-            const addBtn = document.getElementById("detalhe-add-carrinho");
-            if(addBtn) {
-                addBtn.addEventListener("click", () => {
-                    addToCart(product.id, product.name, product.price, product.image);
-                });
-            }
-            // reatribuir evento voltar
-            const backBtn = detailDiv.querySelector(".back-button");
-            if(backBtn) backBtn.addEventListener("click", () => showSection("produtos"));
-        }
-        showSection("detalhe");
-    }
-    
-    // ---------- ADMIN: Listar produtos, editar, excluir, adicionar ----------
-    function renderAdminProducts() {
-        const container = document.getElementById("lista-produtos");
-        if(!container) return;
-        if(products.length === 0) {
-            container.innerHTML = "<p>Nenhum produto cadastrado.</p>";
-            return;
-        }
-        container.innerHTML = products.map(prod => `
-            <div>
-                <span><strong>${prod.name}</strong> - R$ ${prod.price.toFixed(2)} (ID: ${prod.id})</span>
-                <div>
-                    <button class="edit-prod-btn" data-id="${prod.id}">✏️ Editar</button>
-                    <button class="delete-prod-btn" data-id="${prod.id}" class="btn-danger">🗑 Excluir</button>
-                </div>
-            </div>
-        `).join("");
-        
-        document.querySelectorAll(".edit-prod-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const id = parseInt(btn.dataset.id);
-                const prod = products.find(p => p.id === id);
-                if(prod) {
-                    document.getElementById("edit-id").value = prod.id;
-                    document.getElementById("edit-nome").value = prod.name;
-                    document.getElementById("edit-preco").value = prod.price;
-                    document.getElementById("edit-imagem").value = prod.image || "";
-                    document.getElementById("edit-desc").value = prod.description || "";
-                }
-            });
-        });
-        
-        document.querySelectorAll(".delete-prod-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const id = parseInt(btn.dataset.id);
-                if(confirm("Remover produto permanentemente?")) {
-                    products = products.filter(p => p.id !== id);
-                    saveProducts();
-                    renderAdminProducts();
-                    renderProducts();   // atualiza grid
-                    // se o detalhe estava aberto para produto excluído, voltar
-                    if(document.getElementById("detalhe-section").classList.contains("active-section")) showSection("produtos");
-                    showToast("Produto removido.");
-                }
-            });
-        });
-    }
-    
-    function addProduct() {
-        const name = document.getElementById("novo-nome").value.trim();
-        const price = parseFloat(document.getElementById("novo-preco").value);
-        const image = document.getElementById("nova-imagem").value.trim();
-        const desc = document.getElementById("nova-desc").value.trim();
-        if(!name || isNaN(price) || price <= 0) {
-            alert("Nome e preço válido são obrigatórios.");
-            return;
-        }
-        const newId = Date.now();
-        const newProduct = {
-            id: newId,
-            name: name,
-            price: price,
-            image: image || "https://picsum.photos/id/42/200/200",
-            description: desc || "Novo produto adicionado."
-        };
-        products.push(newProduct);
-        saveProducts();
-        renderAdminProducts();
-        renderProducts();
-        // limpar campos
-        document.getElementById("novo-nome").value = "";
-        document.getElementById("novo-preco").value = "";
-        document.getElementById("nova-imagem").value = "";
-        document.getElementById("nova-desc").value = "";
-        showToast(`Produto ${name} adicionado!`);
-    }
-    
-    function updateProduct() {
-        const id = parseInt(document.getElementById("edit-id").value);
-        if(!id) { alert("Selecione um produto para editar clicando em 'Editar'."); return; }
-        const name = document.getElementById("edit-nome").value.trim();
-        const price = parseFloat(document.getElementById("edit-preco").value);
-        const image = document.getElementById("edit-imagem").value.trim();
-        const desc = document.getElementById("edit-desc").value.trim();
-        if(!name || isNaN(price)) { alert("Dados inválidos"); return; }
-        const index = products.findIndex(p => p.id === id);
-        if(index !== -1) {
-            products[index] = { ...products[index], name, price, image: image || products[index].image, description: desc || products[index].description };
-            saveProducts();
-            renderAdminProducts();
-            renderProducts();
-            showToast("Produto atualizado!");
-            document.getElementById("edit-id").value = "";
-            document.getElementById("edit-nome").value = "";
-            document.getElementById("edit-preco").value = "";
-            document.getElementById("edit-imagem").value = "";
-            document.getElementById("edit-desc").value = "";
-        } else {
-            alert("Produto não encontrado");
-        }
-    }
-    
-    function cancelEdit() {
-        document.getElementById("edit-id").value = "";
-        document.getElementById("edit-nome").value = "";
-        document.getElementById("edit-preco").value = "";
-        document.getElementById("edit-imagem").value = "";
-        document.getElementById("edit-desc").value = "";
-    }
-    
-    function renderAdminOrders() {
-        const ordersContainer = document.getElementById("lista-pedidos");
-        if(!ordersContainer) return;
-        const orders = getOrders();
-        if(orders.length === 0) {
-            ordersContainer.innerHTML = "<p>Nenhum pedido realizado ainda.</p>";
-            return;
-        }
-        ordersContainer.innerHTML = orders.map(order => `
-            <div style="flex-direction:column; align-items:flex-start;">
-                <div><strong>Pedido #${order.id}</strong> - ${order.data}</div>
-                <div>Total: R$ ${order.total.toFixed(2)} (Frete: R$ ${order.frete.toFixed(2)})</div>
-                <div style="font-size:0.85rem;">Itens: ${order.itens.map(i => `${i.name} x${i.quantity}`).join(", ")}</div>
-                <div>Status: ${order.status}</div>
-            </div>
-        `).join("");
-    }
-    
-    // ---------- NAVEGAÇÃO ENTRE SEÇÕES ----------
-    function showSection(sectionId) {
-        document.querySelectorAll(".section").forEach(section => {
-            section.classList.remove("active-section");
-        });
-        if(sectionId === "produtos") document.getElementById("produtos-section").classList.add("active-section");
-        if(sectionId === "carrinho") {
-            document.getElementById("carrinho-section").classList.add("active-section");
-            renderCart(); 
-            updateCartTotals();
-        }
-        if(sectionId === "admin") {
-            document.getElementById("admin-section").classList.add("active-section");
-            renderAdminProducts();
-            renderAdminOrders();
-        }
-        if(sectionId === "detalhe") {
-            document.getElementById("detalhe-section").classList.add("active-section");
-        }
-    }
-    
-    function setupNavigation() {
-        document.querySelectorAll("[data-nav]").forEach(link => {
-            link.addEventListener("click", (e) => {
-                const navTo = link.dataset.nav;
-                if(navTo === "produtos") showSection("produtos");
-                if(navTo === "carrinho") showSection("carrinho");
-                if(navTo === "admin") showSection("admin");
-            });
-        });
-        document.querySelectorAll("[data-voltar]").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const to = btn.dataset.voltar;
-                showSection(to);
-            });
-        });
-        const finalizarBtn = document.getElementById("finalizar-compra");
-        if(finalizarBtn) finalizarBtn.addEventListener("click", finalizarCompra);
-    }
-    
-    function showToast(msg) {
-        const toastDiv = document.createElement("div");
-        toastDiv.innerText = msg;
-        toastDiv.style.position = "fixed";
-        toastDiv.style.bottom = "20px";
-        toastDiv.style.right = "20px";
-        toastDiv.style.backgroundColor = "#111";
-        toastDiv.style.color = "#f0a500";
-        toastDiv.style.padding = "10px 20px";
-        toastDiv.style.borderRadius = "30px";
-        toastDiv.style.zIndex = "9999";
-        toastDiv.style.fontWeight = "bold";
-        toastDiv.style.boxShadow = "0 4px 12px black";
-        document.body.appendChild(toastDiv);
-        setTimeout(() => toastDiv.remove(), 2500);
-    }
-    
-    // inicialização
-    function init() {
-        loadData();
-        renderProducts();
-        renderCart();
-        setupFreteListener();
-        setupNavigation();
-        document.getElementById("btn-add-produto")?.addEventListener("click", addProduct);
-        document.getElementById("btn-atualizar-produto")?.addEventListener("click", updateProduct);
-        document.getElementById("btn-cancelar-edit")?.addEventListener("click", cancelEdit);
-        updateCartTotals();
-        // pré carregar frete padrão
-        currentShipping = 0;
-    }
-    
     init();
 </script>
 </body>
