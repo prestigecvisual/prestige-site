@@ -3,388 +3,624 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prestige Visual | Produtos Personalizados</title>
+    <title>Prestige Visual - Produtos Personalizados</title>
     <style>
-        /* ========== CSS ORIGINAL (inalterado) ========== */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #f5f5f5; color: #333; line-height: 1.6; }
-        header { background: #111; color: #fff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; }
-        header nav a { margin-left: 1rem; color: #fff; cursor: pointer; }
-        header nav a:hover { color: #f0a500; }
-        .logo { font-size: 1.5rem; font-weight: bold; } /* fallback sem imagem */
-        .logo img { height: 50px; vertical-align: middle; }
-        .grid-produtos { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; padding: 2rem; }
-        .produto-card { background: #fff; padding: 1rem; border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.1); text-align: center; transition: 0.2s; }
-        .produto-card:hover { transform: translateY(-5px); }
-        .produto-card img { width: 100%; height: 180px; object-fit: contain; background: #fafafa; border-radius: 8px; }
-        .produto-card h3 { margin: 1rem 0 0.5rem; }
-        .produto-card p { font-weight: bold; color: #f05a28; }
-        .produto-card button { margin-top: 0.5rem; padding: 0.5rem 1rem; background: #0077cc; color: #fff; border: none; border-radius: 6px; cursor: pointer; }
-        #carrinho-itens { background: #fff; padding: 1rem; border-radius: 12px; margin-bottom: 1rem; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding: 8px 0; flex-wrap: wrap; }
-        .frete-campos { display: flex; flex-wrap: wrap; gap: 10px; margin: 15px 0; }
-        .frete-campos div { flex: 1; min-width: 100px; }
-        .frete-campos input { width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #ccc; }
-        button { padding: 0.75rem 1.5rem; border-radius: 8px; border: none; background: #0077cc; color: #fff; cursor: pointer; }
-        .total-carrinho { background: #f8f9fa; padding: 12px; border-radius: 12px; margin: 15px 0; font-weight: bold; }
-        .section { display: none; }
-        .active-section { display: block; }
-        .back-button { background: #6c757d; margin-top: 10px; }
-        .admin-form { background: #fff; padding: 1rem; border-radius: 12px; margin: 1rem 0; }
-        @media (max-width: 600px) { .frete-campos div { min-width: 100%; } }
-        
-        /* Estilos do modal de personalização */
-        .modal-personalizacao {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center;
-            z-index: 9999;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background: #111;
+            color: #fff;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        header nav a {
+            margin-left: 1rem;
+            color: #fff;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        header nav a:hover {
+            color: #f0a500;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .banner-simples {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+            margin: 0;
+        }
+        .banner-simples h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        .grid-produtos {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+        .produto-card {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .produto-card:hover {
+            transform: translateY(-5px);
+        }
+        .produto-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #f0f0f0;
+        }
+        .produto-card h3 {
+            margin: 1rem 0 0.5rem;
+            font-size: 1.2rem;
+        }
+        .preco {
+            font-weight: bold;
+            color: #f05a28;
+            font-size: 1.3rem;
+            margin: 0.5rem 0;
+        }
+        .btn-personalizar {
+            background: #0077cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            margin-top: 10px;
+        }
+        .btn-personalizar:hover {
+            background: #005fa3;
+        }
+        .secao {
+            display: none;
+            padding: 2rem;
+        }
+        .secao.ativa {
+            display: block;
+        }
+        .carrinho-item {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .frete-area {
+            background: #fef7e0;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+        .frete-campos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .frete-campos input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        .total {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        button {
+            background: #0077cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .btn-voltar {
+            background: #6c757d;
+            margin-bottom: 1rem;
+        }
+        .admin-produto {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
         }
         .modal-conteudo {
-            background: #fff; max-width: 500px; width: 90%; border-radius: 16px;
-            padding: 1.5rem; max-height: 90%; overflow: auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90%;
+            overflow: auto;
         }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 0.3rem; }
-        input, textarea, select { width: 100%; padding: 0.5rem; border: 1px solid #ccc; border-radius: 6px; }
-        .btn-secondary { background: #6c757d; }
-        .btn-primary { background: #0077cc; }
-        .btn-primary, .btn-secondary { padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; color: white; }
-        .cart-item-info { flex: 2; }
-        .cart-item-actions { display: flex; gap: 5px; align-items: center; }
-        .descricao-produto, .anexo-link { font-size: 0.8rem; color: #555; margin-top: 4px; }
+        .modal-conteudo input, .modal-conteudo select, .modal-conteudo textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+        @media (max-width: 768px) {
+            .grid-produtos {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">
-        <!-- Logo com fallback: se não encontrar a imagem, mostra texto -->
-        <img src="img/logo.png" alt="Prestige Visual" style="height: 50px;" onerror="this.style.display='none'; this.parentElement.innerText='✨ PRESTIGE VISUAL';">
-    </div>
+    <div class="logo">✨ PRESTIGE VISUAL</div>
     <nav>
-        <a data-nav="produtos">🏠 Produtos</a>
-        <a data-nav="carrinho">🛒 Carrinho</a>
-        <a data-nav="admin">🔧 Admin</a>
+        <a onclick="mostrarSecao('produtos')">🏠 Produtos</a>
+        <a onclick="mostrarSecao('carrinho')">🛒 Carrinho (<span id="cart-count">0</span>)</a>
+        <a onclick="mostrarSecao('admin')">🔧 Admin</a>
     </nav>
 </header>
 
-<!-- Banner com fallback -->
-<div id="banner" style="text-align: center; margin: 10px 0;">
-    <img src="img/banner.jpg" alt="Banner Prestige" style="width: 100%; max-height: 300px; object-fit: cover;" onerror="this.src='https://picsum.photos/id/20/1200/300';">
+<div class="banner-simples">
+    <h1>✨ Produtos Personalizados</h1>
+    <p>Chaveiros, Troféus, Placas e muito mais com sua arte!</p>
 </div>
 
-<!-- Seção Produtos -->
-<section id="produtos-section" class="section active-section">
+<!-- Produtos -->
+<div id="secao-produtos" class="secao ativa">
     <div class="grid-produtos" id="produtos-grid"></div>
-</section>
+</div>
 
-<!-- Seção Carrinho -->
-<section id="carrinho-section" class="section">
-    <div style="padding: 1rem 2rem;">
-        <h2>🛍️ Seu Carrinho</h2>
-        <div id="carrinho-itens"></div>
-        <div id="frete" style="background:#fef7e0; padding:1rem; border-radius:12px;">
-            <h3>✈️ Calcular Frete (Correios - simulado)</h3>
-            <div class="frete-campos">
-                <div><label>CEP destino</label><input type="text" id="cep" placeholder="Ex: 01000-000"></div>
-                <div><label>Peso (kg)</label><input type="number" id="peso" step="0.1" value="1.0"></div>
-                <div><label>Altura (cm)</label><input type="number" id="altura" step="0.5" value="10"></div>
-                <div><label>Largura (cm)</label><input type="number" id="largura" step="0.5" value="20"></div>
-                <div><label>Comprimento (cm)</label><input type="number" id="comprimento" step="0.5" value="30"></div>
-                <div><button id="calcular-frete-btn">📦 Calcular</button></div>
-            </div>
-            <div id="resultado-frete" style="font-weight:bold;"></div>
+<!-- Carrinho -->
+<div id="secao-carrinho" class="secao">
+    <button class="btn-voltar" onclick="mostrarSecao('produtos')">← Voltar</button>
+    <h2>🛍️ Carrinho</h2>
+    <div id="carrinho-lista"></div>
+    
+    <div class="frete-area">
+        <h3>✈️ Calcular Frete</h3>
+        <div class="frete-campos">
+            <input type="text" id="cep" placeholder="CEP">
+            <input type="number" id="peso" step="0.1" placeholder="Peso (kg)">
+            <input type="number" id="altura" step="0.5" placeholder="Altura (cm)">
+            <input type="number" id="largura" step="0.5" placeholder="Largura (cm)">
+            <input type="number" id="comprimento" step="0.5" placeholder="Comprimento (cm)">
+            <button onclick="calcularFrete()">Calcular</button>
         </div>
-        <div id="resumo-carrinho" class="total-carrinho"></div>
-        <button id="finalizar-compra">✅ Finalizar Compra</button>
-        <button class="back-button" data-voltar="produtos">← Voltar</button>
+        <div id="frete-resultado"></div>
     </div>
-</section>
+    
+    <div class="total" id="total-carrinho"></div>
+    <button onclick="finalizarCompra()">✅ Finalizar Compra</button>
+</div>
 
-<!-- Seção Admin -->
-<section id="admin-section" class="section">
-    <div style="padding: 1rem 2rem;">
-        <h2>🛠️ Painel Administrativo</h2>
-        <div class="admin-form">
-            <h4>➕ Adicionar Produto</h4>
-            <input type="text" id="novo-nome" placeholder="Nome do produto">
-            <input type="number" id="novo-preco" placeholder="Preço (R$)">
-            <input type="text" id="nova-imagem" placeholder="URL da imagem (deixe em branco para placeholder)">
-            <button id="btn-add-produto">Adicionar</button>
-        </div>
-        <div id="lista-produtos"></div>
-        <h3>📋 Pedidos Realizados</h3>
-        <div id="lista-pedidos"></div>
+<!-- Admin -->
+<div id="secao-admin" class="secao">
+    <button class="btn-voltar" onclick="mostrarSecao('produtos')">← Voltar</button>
+    <h2>🛠️ Administração</h2>
+    
+    <div style="background: white; padding: 1rem; border-radius: 12px; margin: 1rem 0;">
+        <h3>➕ Adicionar Produto</h3>
+        <input type="text" id="novo-nome" placeholder="Nome" style="width: 100%; margin: 5px 0; padding: 8px;">
+        <input type="number" id="novo-preco" placeholder="Preço" style="width: 100%; margin: 5px 0; padding: 8px;">
+        <input type="text" id="nova-imagem" placeholder="URL da imagem (deixe em branco para automática)" style="width: 100%; margin: 5px 0; padding: 8px;">
+        <button onclick="adicionarProduto()" style="width: 100%; margin-top: 10px;">Adicionar Produto</button>
     </div>
-</section>
+    
+    <h3>📦 Produtos</h3>
+    <div id="admin-produtos"></div>
+    
+    <h3>📋 Pedidos</h3>
+    <div id="admin-pedidos"></div>
+</div>
 
 <script>
-    (function() {
-        // ========== DADOS ==========
-        let products = [];
-        let cart = [];
-        let currentShipping = 0;
-        let currentDeadline = 0;
-
-        // Mapeamento de categorias e subcategorias
-        const categoriasData = {
-            "Chaveiro": ["Acrílico (2 a 15mm)", "MDF", "Acrílico + MDF"],
-            "Troféu": ["Acrílico", "MDF", "Acrílico + MDF", "Prisma"],
-            "Placa": ["ACM", "PVC 2mm", "MDF"],
-            "Prisma": ["Acrílico", "Cristal"],
-            "PVC": ["2mm", "3mm", "5mm"],
-            "ACM": ["Branco", "Fosco", "Brilhante"],
-            "Adesivo": ["Vinil", "Transparente", "Recortado"],
-            "Impressos": ["Papel Fotográfico", "Cartão", "Lona"],
-            "Letras Corte Laser": ["Acrílico", "MDF", "Madeira"],
-            "Expositor": ["Mesa", "Piso", "Gôndola"],
-            "MDF": ["3mm", "6mm", "9mm", "12mm"],
-            "Camisetas": ["Polo", "Básica", "Dry Fit"],
-            "Sacolas Personalizadas": ["Papel", "Plástico", "Ecológica"]
-        };
-
-        function getCategoriaFromProdutoName(nome) {
-            for (let cat in categoriasData) {
-                if (nome.toLowerCase().includes(cat.toLowerCase())) return cat;
-            }
-            return "Outros";
-        }
-
-        // Imagens placeholder garantidas
-        function getPlaceholderImage(id) {
-            return `https://picsum.photos/id/${(id % 100) + 10}/200/200`;
-        }
-
-        // Carregar dados
-        function loadData() {
-            const stored = localStorage.getItem("prestige_products");
-            if (stored) {
-                products = JSON.parse(stored);
-            } else {
-                products = [
-                    { id: 1, name: "Chaveiro Acrílico", price: 12.90, image: getPlaceholderImage(1) },
-                    { id: 2, name: "Chaveiro MDF", price: 9.90, image: getPlaceholderImage(2) },
-                    { id: 3, name: "Placa ACM Personalizada", price: 45.90, image: getPlaceholderImage(3) },
-                    { id: 4, name: "Placa PVC 2mm", price: 32.90, image: getPlaceholderImage(4) },
-                    { id: 5, name: "Troféu Acrílico", price: 55.90, image: getPlaceholderImage(5) },
-                    { id: 6, name: "Troféu MDF", price: 48.90, image: getPlaceholderImage(6) },
-                    { id: 7, name: "Troféu Acrílico + MDF", price: 69.90, image: getPlaceholderImage(7) }
-                ];
-                localStorage.setItem("prestige_products", JSON.stringify(products));
-            }
-            const savedCart = localStorage.getItem("prestige_cart");
-            cart = savedCart ? JSON.parse(savedCart) : [];
-            updateCartStorage();
-        }
-
-        function updateCartStorage() { localStorage.setItem("prestige_cart", JSON.stringify(cart)); }
-        function saveProducts() { localStorage.setItem("prestige_products", JSON.stringify(products)); }
-        function getOrders() { return JSON.parse(localStorage.getItem("prestige_orders") || "[]"); }
-        function saveOrders(orders) { localStorage.setItem("prestige_orders", JSON.stringify(orders)); }
-
-        // ========== FRETE ==========
-        function calcularFreteCorreios(cep, pesoKg, alt, larg, comp) {
-            if (!cep.trim()) return { valor: 0, erro: "CEP não informado" };
-            if (pesoKg <= 0) return { valor: 0, erro: "Peso inválido" };
-            const volume = alt * larg * comp;
-            const pesoCubico = volume / 6000;
-            const pesoFinal = Math.max(pesoKg, pesoCubico);
-            let cepNum = parseInt(cep.replace(/\D/g, '')) || 0;
-            let fator = 1.0;
-            if (cepNum > 0) {
-                const dig = cepNum % 10;
-                if (dig < 3) fator = 0.9;
-                else if (dig < 6) fator = 1.2;
-                else fator = 1.5;
-            }
-            let valor = 7.0 + (pesoFinal * 1.8) * fator;
-            valor = Math.max(valor, 9.9);
-            valor = parseFloat(valor.toFixed(2));
-            let prazo = Math.floor(2 + (pesoFinal * 0.5) + (fator * 1.5));
-            prazo = Math.min(Math.max(prazo, 2), 12);
-            return { valor, prazo, erro: null };
-        }
-
-        function updateCartTotals() {
-            const subtotal = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-            const total = subtotal + currentShipping;
-            const div = document.getElementById("resumo-carrinho");
-            if (div) {
-                div.innerHTML = `
-                    <div>Subtotal: R$ ${subtotal.toFixed(2)}</div>
-                    <div>Frete: R$ ${currentShipping.toFixed(2)} ${currentDeadline > 0 ? `(${currentDeadline} dias)` : ''}</div>
-                    <div style="font-size:1.2rem;">Total: R$ ${total.toFixed(2)}</div>
-                `;
-            }
-        }
-
-        // ========== RENDER PRODUTOS ==========
-        function renderProducts() {
-            const grid = document.getElementById("produtos-grid");
-            if (!grid) return;
-            if (products.length === 0) {
-                grid.innerHTML = "<p>Nenhum produto cadastrado. Use o Admin para adicionar.</p>";
-                return;
-            }
-            grid.innerHTML = products.map(prod => `
-                <div class="produto-card">
-                    <img src="${prod.image}" alt="${prod.name}" onerror="this.src='https://picsum.photos/id/1/200/200'">
-                    <h3>${prod.name}</h3>
-                    <p>R$ ${prod.price.toFixed(2)}</p>
-                    <button class="personalizar-btn" data-id="${prod.id}" data-name="${prod.name}" data-price="${prod.price}" data-img="${prod.image}">✨ Personalizar</button>
+    // DADOS
+    let produtos = [
+        { id: 1, nome: "Chaveiro Acrílico", preco: 12.90, imagem: "https://picsum.photos/id/1/200/200" },
+        { id: 2, nome: "Chaveiro MDF", preco: 9.90, imagem: "https://picsum.photos/id/2/200/200" },
+        { id: 3, nome: "Placa ACM", preco: 45.90, imagem: "https://picsum.photos/id/3/200/200" },
+        { id: 4, nome: "Placa PVC 2mm", preco: 32.90, imagem: "https://picsum.photos/id/4/200/200" },
+        { id: 5, nome: "Troféu Acrílico", preco: 55.90, imagem: "https://picsum.photos/id/5/200/200" },
+        { id: 6, nome: "Troféu MDF", preco: 48.90, imagem: "https://picsum.photos/id/6/200/200" },
+        { id: 7, nome: "Troféu Acrílico+MDF", preco: 69.90, imagem: "https://picsum.photos/id/7/200/200" }
+    ];
+    
+    let carrinho = [];
+    let freteValor = 0;
+    
+    // Subcategorias por tipo de produto
+    const subcategorias = {
+        "Chaveiro": ["Acrílico 3mm", "Acrílico 5mm", "Acrílico 10mm", "MDF 3mm", "MDF 5mm"],
+        "Troféu": ["Acrílico Pequeno", "Acrílico Médio", "Acrílico Grande", "MDF", "Combo"],
+        "Placa": ["ACM Branco", "ACM Fosco", "PVC 2mm", "PVC 3mm", "MDF"],
+        "Padrão": ["Personalizado"]
+    };
+    
+    function getCategoria(nome) {
+        if (nome.includes("Chaveiro")) return "Chaveiro";
+        if (nome.includes("Troféu")) return "Troféu";
+        if (nome.includes("Placa")) return "Placa";
+        return "Padrão";
+    }
+    
+    // Salvar dados
+    function salvarDados() {
+        localStorage.setItem("prestige_produtos", JSON.stringify(produtos));
+        localStorage.setItem("prestige_carrinho", JSON.stringify(carrinho));
+    }
+    
+    function carregarDados() {
+        const saved = localStorage.getItem("prestige_produtos");
+        if (saved) produtos = JSON.parse(saved);
+        const savedCart = localStorage.getItem("prestige_carrinho");
+        if (savedCart) carrinho = JSON.parse(savedCart);
+    }
+    
+    // Mostrar produtos
+    function mostrarProdutos() {
+        const grid = document.getElementById("produtos-grid");
+        if (!grid) return;
+        
+        grid.innerHTML = produtos.map(prod => `
+            <div class="produto-card" onclick="abrirPersonalizacao(${prod.id})">
+                <img src="${prod.imagem}" alt="${prod.nome}" onerror="this.src='https://picsum.photos/id/1/200/200'">
+                <h3>${prod.nome}</h3>
+                <div class="preco">R$ ${prod.preco.toFixed(2)}</div>
+                <button class="btn-personalizar" onclick="event.stopPropagation(); abrirPersonalizacao(${prod.id})">✨ Personalizar</button>
+            </div>
+        `).join("");
+        
+        atualizarContadorCarrinho();
+    }
+    
+    // Modal de personalização
+    function abrirPersonalizacao(id) {
+        const produto = produtos.find(p => p.id === id);
+        if (!produto) return;
+        
+        const categoria = getCategoria(produto.nome);
+        const opcoes = subcategorias[categoria] || subcategorias["Padrão"];
+        
+        const modal = document.createElement("div");
+        modal.className = "modal";
+        modal.innerHTML = `
+            <div class="modal-conteudo">
+                <h3>${produto.nome}</h3>
+                <img src="${produto.imagem}" style="width:100%; max-height:150px; object-fit:contain;">
+                <p><strong>Preço: R$ ${produto.preco.toFixed(2)}</strong></p>
+                
+                <label>Variação:</label>
+                <select id="selVariacao">
+                    ${opcoes.map(op => `<option value="${op}">${op}</option>`).join("")}
+                </select>
+                
+                <label>Descrição (cor, texto, medidas):</label>
+                <textarea id="txtDescricao" rows="3" placeholder="Ex: Cor azul, gravação com nome..."></textarea>
+                
+                <label>Anexar arquivo (opcional):</label>
+                <input type="file" id="fileAnexo" accept="image/*,application/pdf">
+                
+                <div style="margin-top: 15px;">
+                    <button onclick="adicionarPersonalizado(${produto.id}, '${produto.nome}', ${produto.preco})">✅ Adicionar ao Carrinho</button>
+                    <button onclick="fecharModal(this)">❌ Cancelar</button>
                 </div>
-            `).join("");
-            
-            document.querySelectorAll(".personalizar-btn").forEach(btn => {
-                btn.addEventListener("click", (e) => {
-                    const id = parseInt(btn.dataset.id);
-                    const name = btn.dataset.name;
-                    const price = parseFloat(btn.dataset.price);
-                    const image = btn.dataset.img;
-                    abrirModalPersonalizacao(id, name, price, image);
-                });
-            });
-        }
-
-        // ========== MODAL PERSONALIZAÇÃO ==========
-        function abrirModalPersonalizacao(id, name, price, image) {
-            const categoria = getCategoriaFromProdutoName(name);
-            const subcategorias = categoriasData[categoria] || ["Padrão"];
-            
-            // Remove modal existente
-            const existing = document.querySelector(".modal-personalizacao");
-            if (existing) existing.remove();
-            
-            const modal = document.createElement("div");
-            modal.className = "modal-personalizacao";
-            modal.innerHTML = `
-                <div class="modal-conteudo">
-                    <h3>${name}</h3>
-                    <img src="${image}" style="width:100%; max-height:150px; object-fit:contain; margin:10px 0;" onerror="this.src='https://picsum.photos/id/1/200/200'">
-                    <p>Preço base: R$ ${price.toFixed(2)}</p>
-                    <div class="form-group">
-                        <label>Variação / Subcategoria:</label>
-                        <select id="subcategoria-select">
-                            ${subcategorias.map(sub => `<option value="${sub}">${sub}</option>`).join("")}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Descrição / Especificações (ex: cor, texto, medidas):</label>
-                        <textarea id="descricao-produto" rows="3" placeholder="Ex: Acrílico 5mm, azul, gravação com nome..."></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Anexar arquivo (arte, imagem, PDF):</label>
-                        <input type="file" id="anexo-produto" accept="image/*,application/pdf">
-                        <div id="preview-arquivo" class="descricao-produto"></div>
-                    </div>
-                    <div style="display:flex; gap:1rem; justify-content:flex-end; margin-top:1rem;">
-                        <button id="confirmar-add" class="btn-primary">✅ Adicionar ao Carrinho</button>
-                        <button id="fechar-modal" class="btn-secondary">❌ Cancelar</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(modal);
-            
-            let arquivoBase64 = "";
-            const fileInput = modal.querySelector("#anexo-produto");
-            fileInput.addEventListener("change", function(e) {
-                if (this.files.length) {
-                    const reader = new FileReader();
-                    reader.onload = function(ev) {
-                        arquivoBase64 = ev.target.result;
-                        modal.querySelector("#preview-arquivo").innerHTML = `<small>📎 ${fileInput.files[0].name}</small>`;
-                    };
-                    reader.readAsDataURL(this.files[0]);
-                } else {
-                    arquivoBase64 = "";
-                    modal.querySelector("#preview-arquivo").innerHTML = "";
-                }
-            });
-            
-            modal.querySelector("#confirmar-add").onclick = () => {
-                const subcategoria = modal.querySelector("#subcategoria-select").value;
-                const descricao = modal.querySelector("#descricao-produto").value;
-                const item = {
-                    productId: id,
-                    name: `${name} (${subcategoria})`,
-                    price: price,
-                    quantity: 1,
-                    image: image,
-                    descricao: descricao,
-                    anexo: arquivoBase64
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        window.personalizacaoTemp = { variacao: opcoes[0], descricao: "", anexo: "" };
+        
+        const selVariacao = modal.querySelector("#selVariacao");
+        const txtDescricao = modal.querySelector("#txtDescricao");
+        const fileAnexo = modal.querySelector("#fileAnexo");
+        
+        selVariacao.onchange = () => { window.personalizacaoTemp.variacao = selVariacao.value; };
+        txtDescricao.onchange = () => { window.personalizacaoTemp.descricao = txtDescricao.value; };
+        fileAnexo.onchange = (e) => {
+            if (e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    window.personalizacaoTemp.anexo = ev.target.result;
                 };
-                cart.push(item);
-                updateCartStorage();
-                renderCart();
-                showToast(`${item.name} adicionado ao carrinho!`);
-                modal.remove();
-            };
-            
-            modal.querySelector("#fechar-modal").onclick = () => modal.remove();
-        }
-
-        // ========== RENDER CARRINHO ==========
-        function renderCart() {
-            const container = document.getElementById("carrinho-itens");
-            if (!container) return;
-            if (cart.length === 0) {
-                container.innerHTML = "<p>Carrinho vazio.</p>";
-                updateCartTotals();
-                return;
+                reader.readAsDataURL(e.target.files[0]);
             }
-            container.innerHTML = cart.map((item, idx) => `
-                <div class="cart-item">
-                    <div class="cart-item-info">
-                        <strong>${item.name}</strong><br>
-                        R$ ${item.price.toFixed(2)} x ${item.quantity} = R$ ${(item.price * item.quantity).toFixed(2)}
-                        ${item.descricao ? `<div class="descricao-produto">📝 ${item.descricao}</div>` : ""}
-                        ${item.anexo ? `<div class="anexo-link"><a href="${item.anexo}" download="anexo_${idx}.${item.anexo.includes('pdf')?'pdf':'jpg'}">📎 Baixar anexo</a></div>` : ""}
-                    </div>
-                    <div class="cart-item-actions">
-                        <button class="qty-down" data-idx="${idx}">-</button>
-                        <span>${item.quantity}</span>
-                        <button class="qty-up" data-idx="${idx}">+</button>
-                        <button class="remove-item" data-idx="${idx}">🗑</button>
-                    </div>
-                </div>
-            `).join("");
-            
-            document.querySelectorAll(".qty-down").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    if (cart[idx].quantity > 1) cart[idx].quantity--;
-                    else cart.splice(idx, 1);
-                    updateCartStorage();
-                    renderCart();
-                    updateCartTotals();
-                });
-            });
-            document.querySelectorAll(".qty-up").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    cart[idx].quantity++;
-                    updateCartStorage();
-                    renderCart();
-                    updateCartTotals();
-                });
-            });
-            document.querySelectorAll(".remove-item").forEach(btn => {
-                btn.addEventListener("click", () => {
-                    const idx = parseInt(btn.dataset.idx);
-                    cart.splice(idx, 1);
-                    updateCartStorage();
-                    renderCart();
-                    updateCartTotals();
-                });
-            });
-            updateCartTotals();
+        };
+    }
+    
+    function adicionarPersonalizado(id, nome, preco) {
+        const variacao = window.personalizacaoTemp?.variacao || "Padrão";
+        const descricao = window.personalizacaoTemp?.descricao || "";
+        const anexo = window.personalizacaoTemp?.anexo || "";
+        
+        const item = {
+            id: Date.now(),
+            produtoId: id,
+            nome: `${nome} (${variacao})`,
+            preco: preco,
+            quantidade: 1,
+            descricao: descricao,
+            anexo: anexo
+        };
+        
+        carrinho.push(item);
+        salvarDados();
+        mostrarCarrinho();
+        atualizarContadorCarrinho();
+        alert(`✅ ${item.nome} adicionado ao carrinho!`);
+        fecharModal(document.querySelector(".modal button"));
+        mostrarSecao("carrinho");
+    }
+    
+    function fecharModal(botao) {
+        const modal = botao.closest(".modal");
+        if (modal) modal.remove();
+    }
+    
+    // Mostrar carrinho
+    function mostrarCarrinho() {
+        const container = document.getElementById("carrinho-lista");
+        if (!container) return;
+        
+        if (carrinho.length === 0) {
+            container.innerHTML = "<p style='text-align:center; padding:2rem;'>Carrinho vazio</p>";
+            atualizarTotal();
+            return;
         }
-
-        // ========== FINALIZAR COMPRA ==========
-        function finalizarCompra() {
-            if (cart.length === 0) { alert("Carrinho vazio"); return; }
-            const subtotal = cart.reduce((a, i) => a + (i.price * i.quantity), 0);
-            const total = subtotal + currentShipping;
-            const order = {
-                id: Date.now(),
-                data: new Date().toL
+        
+        container.innerHTML = carrinho.map((item, idx) => `
+            <div class="carrinho-item">
+                <div>
+                    <strong>${item.nome}</strong><br>
+                    R$ ${item.preco.toFixed(2)} x ${item.quantidade} = R$ ${(item.preco * item.quantidade).toFixed(2)}
+                    ${item.descricao ? `<div style="font-size:0.8rem; color:#666;">📝 ${item.descricao}</div>` : ""}
+                    ${item.anexo ? `<div style="font-size:0.8rem;"><a href="${item.anexo}" download="anexo_${idx}">📎 Baixar anexo</a></div>` : ""}
+                </div>
+                <div>
+                    <button onclick="alterarQuantidade(${idx}, -1)">-</button>
+                    <span style="margin:0 10px;">${item.quantidade}</span>
+                    <button onclick="alterarQuantidade(${idx}, 1)">+</button>
+                    <button onclick="removerItem(${idx})" style="background:#d9534f;">🗑</button>
+                </div>
+            </div>
+        `).join("");
+        atualizarTotal();
+    }
+    
+    function alterarQuantidade(idx, delta) {
+        if (carrinho[idx].quantidade + delta > 0) {
+            carrinho[idx].quantidade += delta;
+        } else {
+            carrinho.splice(idx, 1);
+        }
+        salvarDados();
+        mostrarCarrinho();
+        atualizarContadorCarrinho();
+    }
+    
+    function removerItem(idx) {
+        carrinho.splice(idx, 1);
+        salvarDados();
+        mostrarCarrinho();
+        atualizarContadorCarrinho();
+    }
+    
+    function atualizarTotal() {
+        const subtotal = carrinho.reduce((s, i) => s + (i.preco * i.quantidade), 0);
+        const total = subtotal + freteValor;
+        const div = document.getElementById("total-carrinho");
+        if (div) {
+            div.innerHTML = `
+                <div>Subtotal: R$ ${subtotal.toFixed(2)}</div>
+                <div>Frete: R$ ${freteValor.toFixed(2)}</div>
+                <div style="font-size:1.3rem; margin-top:10px;">Total: R$ ${total.toFixed(2)}</div>
+            `;
+        }
+    }
+    
+    function atualizarContadorCarrinho() {
+        const count = carrinho.reduce((s, i) => s + i.quantidade, 0);
+        const span = document.getElementById("cart-count");
+        if (span) span.innerText = count;
+    }
+    
+    // Frete
+    function calcularFrete() {
+        const cep = document.getElementById("cep").value;
+        const peso = parseFloat(document.getElementById("peso").value);
+        const altura = parseFloat(document.getElementById("altura").value) || 10;
+        const largura = parseFloat(document.getElementById("largura").value) || 20;
+        const comprimento = parseFloat(document.getElementById("comprimento").value) || 30;
+        
+        if (!cep || isNaN(peso)) {
+            alert("Preencha CEP e peso");
+            return;
+        }
+        
+        const volume = altura * largura * comprimento;
+        const pesoCubico = volume / 6000;
+        const pesoFinal = Math.max(peso, pesoCubico);
+        
+        const ultimoDigito = parseInt(cep.replace(/\D/g, '').slice(-1)) || 0;
+        let fator = 1;
+        if (ultimoDigito < 3) fator = 0.9;
+        else if (ultimoDigito < 6) fator = 1.2;
+        else fator = 1.5;
+        
+        freteValor = Math.max(9.9, 7 + (pesoFinal * 1.8) * fator);
+        const prazo = Math.min(12, Math.max(2, Math.floor(2 + pesoFinal * 0.5 + fator)));
+        
+        document.getElementById("frete-resultado").innerHTML = `<span style="color:green;">✅ Frete: R$ ${freteValor.toFixed(2)} | Prazo: ${prazo} dias úteis</span>`;
+        atualizarTotal();
+    }
+    
+    // Finalizar compra
+    function finalizarCompra() {
+        if (carrinho.length === 0) {
+            alert("Carrinho vazio!");
+            return;
+        }
+        
+        const subtotal = carrinho.reduce((s, i) => s + (i.preco * i.quantidade), 0);
+        const pedido = {
+            id: Date.now(),
+            data: new Date().toLocaleString(),
+            itens: JSON.parse(JSON.stringify(carrinho)),
+            subtotal: subtotal,
+            frete: freteValor,
+            total: subtotal + freteValor
+        };
+        
+        const pedidosSalvos = localStorage.getItem("prestige_pedidos");
+        const pedidos = pedidosSalvos ? JSON.parse(pedidosSalvos) : [];
+        pedidos.unshift(pedido);
+        localStorage.setItem("prestige_pedidos", JSON.stringify(pedidos));
+        
+        carrinho = [];
+        freteValor = 0;
+        salvarDados();
+        mostrarCarrinho();
+        atualizarContadorCarrinho();
+        document.getElementById("cep").value = "";
+        document.getElementById("frete-resultado").innerHTML = "";
+        alert("✅ Pedido finalizado com sucesso!");
+        mostrarSecao("produtos");
+        mostrarAdminPedidos();
+    }
+    
+    // Admin
+    function mostrarAdminProdutos() {
+        const container = document.getElementById("admin-produtos");
+        if (!container) return;
+        container.innerHTML = produtos.map(prod => `
+            <div class="admin-produto">
+                <span><strong>${prod.nome}</strong> - R$ ${prod.preco.toFixed(2)}</span>
+                <button onclick="excluirProduto(${prod.id})" style="background:#d9534f; padding:5px 10px;">Excluir</button>
+            </div>
+        `).join("");
+    }
+    
+    function excluirProduto(id) {
+        if (confirm("Remover este produto?")) {
+            produtos = produtos.filter(p => p.id !== id);
+            salvarDados();
+            mostrarAdminProdutos();
+            mostrarProdutos();
+        }
+    }
+    
+    function adicionarProduto() {
+        const nome = document.getElementById("novo-nome").value.trim();
+        const preco = parseFloat(document.getElementById("novo-preco").value);
+        let imagem = document.getElementById("nova-imagem").value.trim();
+        
+        if (!nome || isNaN(preco)) {
+            alert("Preencha nome e preço");
+            return;
+        }
+        if (!imagem) imagem = "https://picsum.photos/id/" + (Math.floor(Math.random() * 100) + 1) + "/200/200";
+        
+        const novoId = Date.now();
+        produtos.push({ id: novoId, nome, preco, imagem });
+        salvarDados();
+        mostrarAdminProdutos();
+        mostrarProdutos();
+        
+        document.getElementById("novo-nome").value = "";
+        document.getElementById("novo-preco").value = "";
+        document.getElementById("nova-imagem").value = "";
+        alert("Produto adicionado!");
+    }
+    
+    function mostrarAdminPedidos() {
+        const container = document.getElementById("admin-pedidos");
+        if (!container) return;
+        const pedidosSalvos = localStorage.getItem("prestige_pedidos");
+        const pedidos = pedidosSalvos ? JSON.parse(pedidosSalvos) : [];
+        
+        if (pedidos.length === 0) {
+            container.innerHTML = "<p>Nenhum pedido ainda.</p>";
+            return;
+        }
+        
+        container.innerHTML = pedidos.map(ped => `
+            <div style="background:white; padding:1rem; margin:0.5rem 0; border-radius:8px;">
+                <strong>Pedido #${ped.id}</strong> - ${ped.data}<br>
+                Total: R$ ${ped.total.toFixed(2)} (Frete: R$ ${ped.frete.toFixed(2)})<br>
+                Itens: ${ped.itens.map(i => `${i.nome} x${i.quantidade}`).join(", ")}
+            </div>
+        `).join("");
+    }
+    
+    // Navegação
+    function mostrarSecao(secao) {
+        document.querySelectorAll(".secao").forEach(s => s.classList.remove("ativa"));
+        document.getElementById(`secao-${secao}`).classList.add("ativa");
+        
+        if (secao === "carrinho") {
+            mostrarCarrinho();
+        }
+        if (secao === "admin") {
+            mostrarAdminProdutos();
+            mostrarAdminPedidos();
+        }
+    }
+    
+    // Inicializar
+    carregarDados();
+    mostrarProdutos();
+    mostrarCarrinho();
+    atualizarContadorCarrinho();
+    
+    console.log("✅ Sistema inicializado com sucesso!", produtos.length, "produtos carregados");
+</script>
+</body>
+</html>
