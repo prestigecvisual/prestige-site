@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prestige Visual - Sistema Profissional</title>
+    <title>Prestige Visual - Sistema Completo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -40,36 +41,57 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
+        }
+        .pedido-minimo {
+            background: #ffc107;
+            color: #333;
+            text-align: center;
+            padding: 8px;
+            font-weight: bold;
         }
         
-        .categorias {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            padding: 1rem 2rem;
+        /* Categorias */
+        .categorias-container {
             background: white;
+            padding: 1rem 2rem;
             border-bottom: 1px solid #ddd;
-            position: sticky;
-            top: 70px;
-            z-index: 99;
         }
-        .categoria-btn {
-            background: #e9ecef;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 25px;
+        .categoria-principal {
+            display: inline-block;
+            margin: 0 10px;
             cursor: pointer;
+            padding: 10px 20px;
+            background: #e9ecef;
+            border-radius: 25px;
             transition: all 0.3s;
         }
-        .categoria-btn.ativo, .categoria-btn:hover {
+        .categoria-principal.ativo, .categoria-principal:hover {
             background: #0077cc;
+            color: white;
+        }
+        .subcategorias {
+            margin-top: 10px;
+            padding: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .subcategoria {
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .subcategoria.ativo {
+            background: #f05a28;
             color: white;
         }
         
         .grid-produtos {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 1.5rem;
             padding: 2rem;
         }
@@ -78,7 +100,6 @@
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            cursor: pointer;
             transition: transform 0.3s;
         }
         .produto-card:hover { transform: translateY(-5px); }
@@ -151,6 +172,7 @@
         }
         .btn-voltar { background: #6c757d; margin-bottom: 1rem; }
         .btn-danger { background: #dc3545; }
+        .btn-success { background: #28a745; }
         
         .modal {
             position: fixed;
@@ -172,47 +194,6 @@
             width: 90%;
             max-height: 90%;
             overflow: auto;
-        }
-        
-        /* Folha de Rosto */
-        .folha-rosto {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        .folha-rosto .header {
-            text-align: center;
-            border-bottom: 2px solid #0077cc;
-            padding-bottom: 1rem;
-            margin-bottom: 1rem;
-        }
-        .folha-rosto .info-cliente {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-        .folha-rosto .item-pedido {
-            border: 1px solid #ddd;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 8px;
-        }
-        .folha-rosto .layout-cliente {
-            background: #fafafa;
-            padding: 1rem;
-            text-align: center;
-            border: 2px dashed #0077cc;
-            margin: 1rem 0;
-        }
-        .folha-rosto .layout-cliente img { max-width: 100%; max-height: 200px; }
-        .folha-rosto .aprovacao {
-            margin-top: 2rem;
-            text-align: center;
-            padding-top: 1rem;
-            border-top: 1px solid #ddd;
         }
         
         /* Admin */
@@ -242,31 +223,17 @@
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
         th { background: #f8f9fa; }
         
-        .pedido-card {
-            background: white;
-            padding: 1rem;
-            margin-bottom: 1rem;
+        .pasta-drive {
+            background: #e8f4fd;
+            padding: 1.5rem;
             border-radius: 12px;
-            cursor: pointer;
-            border: 1px solid #ddd;
-        }
-        .pedido-card:hover { background: #f8f9fa; }
-        
-        .anexo-img {
-            max-width: 50px;
-            max-height: 50px;
-            cursor: pointer;
-        }
-        
-        @media print {
-            header, nav, .categorias, .btn-voltar, .admin-tabs, button:not(.print-btn) { display: none; }
-            .folha-rosto { margin: 0; padding: 0; }
-            body { background: white; }
+            margin-bottom: 2rem;
+            text-align: center;
         }
         
         @media (max-width: 768px) {
             .grid-produtos { grid-template-columns: 1fr; padding: 1rem; }
-            .categorias { overflow-x: auto; white-space: nowrap; flex-wrap: nowrap; }
+            .categoria-principal { margin: 5px; }
         }
     </style>
 </head>
@@ -275,7 +242,7 @@
 <header>
     <div class="logo">✨ PRESTIGE VISUAL</div>
     <nav>
-        <a onclick="mostrarSecao('produtos')">🏠 Produtos</a>
+        <a onclick="mostrarSecao('produtos')">📦 Produtos</a>
         <a onclick="mostrarSecao('carrinho')">🛒 Carrinho (<span id="cart-count">0</span>)</a>
         <a onclick="mostrarSecao('cliente')">👤 Minha Conta</a>
         <a onclick="mostrarAdmin()">🔧 Admin</a>
@@ -285,11 +252,16 @@
 <div class="banner">
     <h1>✨ Produtos Personalizados</h1>
     <p>Chaveiros, Troféus, Placas e muito mais com sua arte!</p>
-    <p style="font-size:0.9rem; margin-top:10px;">⚠️ Pedido mínimo: R$ 250,00</p>
+</div>
+<div class="pedido-minimo">
+    ⚠️ Pedido mínimo: R$ 250,00
 </div>
 
 <!-- Categorias -->
-<div class="categorias" id="categorias"></div>
+<div class="categorias-container">
+    <div id="categorias-principais"></div>
+    <div id="subcategorias" class="subcategorias"></div>
+</div>
 
 <!-- Produtos -->
 <div id="secao-produtos" class="secao ativa">
@@ -363,6 +335,22 @@
     </div>
     <div id="admin-painel" style="display:none;">
         <h2>🛠️ Painel Administrativo</h2>
+        
+        <div class="pasta-drive">
+            <h3>📁 Google Drive - Organização de Arquivos</h3>
+            <p><strong>Pasta de destino:</strong> <code>https://drive.google.com/drive/u/0/folders/1rDd44Cc2O7zw6rsRYFnFoYT3vwNDqyDU</code></p>
+            <p>Os arquivos serão baixados com a estrutura:</p>
+            <code>📁 Pedido_12345_Nome_Cliente/<br>
+            &nbsp;&nbsp;📄 item1_Chaveiro_Acrilico.jpg<br>
+            &nbsp;&nbsp;📄 item2_Placa_PVC.pdf<br>
+            &nbsp;&nbsp;📄 descricao_item1.txt</code>
+            <div style="margin-top: 15px;">
+                <button onclick="exportarTodosAnexos()" class="btn-success">📥 Baixar TODOS os anexos organizados (ZIP)</button>
+                <button onclick="window.open('https://drive.google.com/drive/u/0/folders/1rDd44Cc2O7zw6rsRYFnFoYT3vwNDqyDU')" style="background:#0077cc;">🌐 Abrir Pasta no Google Drive</button>
+            </div>
+            <p style="font-size:0.8rem; margin-top:10px;">* Após baixar o ZIP, envie o conteúdo para a pasta do Drive. Os arquivos já vêm com o nome do pedido e cliente.</p>
+        </div>
+        
         <div class="admin-tabs">
             <div class="admin-tab ativo" onclick="mudarAdminTab('pedidos')">📋 Pedidos</div>
             <div class="admin-tab" onclick="mudarAdminTab('clientes')">👥 Clientes</div>
@@ -400,15 +388,14 @@
 </div>
 
 <script>
-    // ========== DADOS ==========
+    // ========== DADOS INICIAIS ==========
     let produtos = [
-        { id: 1, nome: "Chaveiro Acrílico", preco: 12.90, peso: 50, imagem: "https://picsum.photos/id/1/200/200", categoria: "Chaveiro" },
-        { id: 2, nome: "Chaveiro MDF", preco: 9.90, peso: 40, imagem: "https://picsum.photos/id/2/200/200", categoria: "Chaveiro" },
-        { id: 3, nome: "Placa ACM", preco: 45.90, peso: 200, imagem: "https://picsum.photos/id/3/200/200", categoria: "Placa" },
-        { id: 4, nome: "Placa PVC 2mm", preco: 32.90, peso: 150, imagem: "https://picsum.photos/id/4/200/200", categoria: "Placa" },
-        { id: 5, nome: "Troféu Acrílico", preco: 55.90, peso: 350, imagem: "https://picsum.photos/id/5/200/200", categoria: "Troféu" },
-        { id: 6, nome: "Troféu MDF", preco: 48.90, peso: 400, imagem: "https://picsum.photos/id/6/200/200", categoria: "Troféu" },
-        { id: 7, nome: "Adesivo Vinil", preco: 5.90, peso: 10, imagem: "https://picsum.photos/id/7/200/200", categoria: "Adesivo" }
+        { id: 1, nome: "Chaveiro Acrílico", preco: 12.90, peso: 50, imagem: "https://picsum.photos/id/1/200/200", categoria: "Chaveiro", subcategoria: "Acrílico" },
+        { id: 2, nome: "Chaveiro MDF", preco: 9.90, peso: 40, imagem: "https://picsum.photos/id/2/200/200", categoria: "Chaveiro", subcategoria: "MDF" },
+        { id: 3, nome: "Placa ACM", preco: 45.90, peso: 200, imagem: "https://picsum.photos/id/3/200/200", categoria: "Placa", subcategoria: "ACM" },
+        { id: 4, nome: "Placa PVC 2mm", preco: 32.90, peso: 150, imagem: "https://picsum.photos/id/4/200/200", categoria: "Placa", subcategoria: "PVC" },
+        { id: 5, nome: "Troféu Acrílico", preco: 55.90, peso: 350, imagem: "https://picsum.photos/id/5/200/200", categoria: "Troféu", subcategoria: "Acrílico" },
+        { id: 6, nome: "Troféu MDF", preco: 48.90, peso: 400, imagem: "https://picsum.photos/id/6/200/200", categoria: "Troféu", subcategoria: "MDF" }
     ];
     
     let carrinho = [];
@@ -418,13 +405,21 @@
     let adminLogado = false;
     let clientes = [];
     let pedidos = [];
+    let categoriaAtual = "todos";
+    let subcategoriaAtual = "todos";
     
     const ADMIN_SENHA = "admin123";
     const PEDIDO_MINIMO = 250;
     
-    // Categorias únicas
-    const categorias = [...new Set(produtos.map(p => p.categoria))].sort();
+    const categoriasConfig = {
+        "Chaveiro": ["Acrílico", "MDF", "Acrílico+MDF"],
+        "Troféu": ["Acrílico", "MDF", "Acrílico+MDF"],
+        "Placa": ["ACM", "PVC 2mm", "PVC 3mm", "MDF"],
+        "Adesivo": ["Vinil", "Transparente", "Recortado"],
+        "Outros": ["Caneca", "Botton", "Ímã"]
+    };
     
+    // ========== FUNÇÕES PRINCIPAIS ==========
     function carregarDados() {
         const savedProdutos = localStorage.getItem("prestige_produtos");
         if (savedProdutos) produtos = JSON.parse(savedProdutos);
@@ -445,38 +440,68 @@
         localStorage.setItem("prestige_pedidos", JSON.stringify(pedidos));
     }
     
-    // ========== PRODUTOS E CATEGORIAS ==========
+    // ========== CATEGORIAS ==========
     function renderizarCategorias() {
-        const container = document.getElementById("categorias");
-        container.innerHTML = `<button class="categoria-btn ativo" data-categoria="todos">📦 Todos</button>` +
-            categorias.map(cat => `<button class="categoria-btn" data-categoria="${cat}">${cat}</button>`).join("");
+        const container = document.getElementById("categorias-principais");
+        const categorias = ["todos", ...Object.keys(categoriasConfig)];
         
-        document.querySelectorAll(".categoria-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                document.querySelectorAll(".categoria-btn").forEach(b => b.classList.remove("ativo"));
-                btn.classList.add("ativo");
-                renderizarProdutos(btn.dataset.categoria);
+        container.innerHTML = categorias.map(cat => `
+            <span class="categoria-principal ${cat === categoriaAtual ? 'ativo' : ''}" data-categoria="${cat}">${cat === 'todos' ? '📦 Todos' : cat}</span>
+        `).join("");
+        
+        document.querySelectorAll(".categoria-principal").forEach(el => {
+            el.addEventListener("click", () => {
+                categoriaAtual = el.dataset.categoria;
+                subcategoriaAtual = "todos";
+                renderizarSubcategorias();
+                renderizarProdutos();
+                document.querySelectorAll(".categoria-principal").forEach(c => c.classList.remove("ativo"));
+                el.classList.add("ativo");
+            });
+        });
+        renderizarSubcategorias();
+    }
+    
+    function renderizarSubcategorias() {
+        const container = document.getElementById("subcategorias");
+        if (categoriaAtual === "todos") {
+            container.innerHTML = "";
+            return;
+        }
+        const subs = ["todos", ...(categoriasConfig[categoriaAtual] || [])];
+        container.innerHTML = subs.map(sub => `
+            <span class="subcategoria ${sub === subcategoriaAtual ? 'ativo' : ''}" data-sub="${sub}">${sub === 'todos' ? '📋 Todos' : sub}</span>
+        `).join("");
+        
+        document.querySelectorAll(".subcategoria").forEach(el => {
+            el.addEventListener("click", () => {
+                subcategoriaAtual = el.dataset.sub;
+                renderizarProdutos();
+                document.querySelectorAll(".subcategoria").forEach(s => s.classList.remove("ativo"));
+                el.classList.add("ativo");
             });
         });
     }
     
-    function renderizarProdutos(categoria = "todos") {
+    function renderizarProdutos() {
         const grid = document.getElementById("produtos-grid");
-        const filtrados = categoria === "todos" ? produtos : produtos.filter(p => p.categoria === categoria);
+        let filtrados = produtos;
+        if (categoriaAtual !== "todos") filtrados = filtrados.filter(p => p.categoria === categoriaAtual);
+        if (subcategoriaAtual !== "todos") filtrados = filtrados.filter(p => p.subcategoria === subcategoriaAtual);
         
         grid.innerHTML = filtrados.map(prod => `
             <div class="produto-card">
                 <img src="${prod.imagem}" onerror="this.src='https://picsum.photos/id/1/200/200'">
                 <h3>${prod.nome}</h3>
                 <div class="preco">R$ ${prod.preco.toFixed(2)}</div>
-                <div class="peso">⚖️ Peso: ${prod.peso}g</div>
+                <div class="peso">⚖️ ${prod.peso}g</div>
                 <button onclick="abrirPersonalizacao(${prod.id})">✨ Personalizar</button>
             </div>
         `).join("");
         atualizarContadorCarrinho();
     }
     
-    // ========== PERSONALIZAÇÃO (COM OPÇÃO FRENTE/VERSO) ==========
+    // ========== PERSONALIZAÇÃO ==========
     function abrirPersonalizacao(id) {
         const produto = produtos.find(p => p.id === id);
         const modal = document.createElement("div");
@@ -487,20 +512,16 @@
                 <img src="${produto.imagem}" style="width:100%; max-height:150px; object-fit:contain;">
                 <p><strong>Preço: R$ ${produto.preco.toFixed(2)}</strong></p>
                 <p><strong>Peso por peça: ${produto.peso}g</strong></p>
-                
                 <label>Quantidade de peças:</label>
                 <select id="qtdPecas" style="width:100%; padding:8px; margin:8px 0;">
                     <option value="1">1 peça (frente)</option>
                     <option value="2">2 peças (frente e verso)</option>
                 </select>
-                
                 <label>Descrição / Especificações:</label>
                 <textarea id="descricao" rows="3" placeholder="Cor, texto, medidas, observações..."></textarea>
-                
                 <label>Anexar arquivo (layout/arte):</label>
                 <input type="file" id="anexo" accept="image/*,application/pdf">
                 <div id="previewAnexo" style="margin-top:5px; font-size:0.8rem;"></div>
-                
                 <div style="margin-top:15px;">
                     <button onclick="adicionarAoCarrinho(${produto.id}, '${produto.nome}', ${produto.preco}, ${produto.peso})">✅ Adicionar</button>
                     <button onclick="this.closest('.modal').remove()">❌ Cancelar</button>
@@ -510,7 +531,6 @@
         document.body.appendChild(modal);
         
         window.persTemp = { qtdPecas: 1, descricao: "", anexo: "" };
-        
         const selQtd = modal.querySelector("#qtdPecas");
         const txtDesc = modal.querySelector("#descricao");
         const fileInput = modal.querySelector("#anexo");
@@ -531,28 +551,23 @@
     
     function adicionarAoCarrinho(id, nome, preco, pesoUnitario) {
         const qtdPecas = window.persTemp?.qtdPecas || 1;
-        const pesoTotal = pesoUnitario * qtdPecas;
-        const precoTotal = preco * qtdPecas;
-        
         const item = {
             id: Date.now(),
             produtoId: id,
             nome: `${nome} (${qtdPecas} peça${qtdPecas > 1 ? 's' : ''})`,
-            preco: precoTotal,
-            precoUnitario: preco,
+            preco: preco * qtdPecas,
             quantidade: 1,
             qtdPecas: qtdPecas,
-            peso: pesoTotal,
+            peso: pesoUnitario * qtdPecas,
             descricao: window.persTemp?.descricao || "",
             anexo: window.persTemp?.anexo || "",
             imagem: produtos.find(p => p.id === id)?.imagem
         };
-        
         carrinho.push(item);
         salvarDados();
         mostrarCarrinho();
         atualizarContadorCarrinho();
-        alert(`✅ ${item.nome} adicionado! Peso: ${pesoTotal}g`);
+        alert(`✅ ${item.nome} adicionado! Peso: ${item.peso}g`);
         document.querySelector(".modal")?.remove();
         mostrarSecao("carrinho");
     }
@@ -561,24 +576,22 @@
     function mostrarCarrinho() {
         const container = document.getElementById("carrinho-lista");
         if (!container) return;
-        
         if (carrinho.length === 0) {
             container.innerHTML = "<p style='text-align:center; padding:2rem;'>Carrinho vazio</p>";
             atualizarTotal();
             return;
         }
-        
         container.innerHTML = carrinho.map((item, idx) => `
             <div class="carrinho-item">
                 <div style="flex:2">
                     <strong>${item.nome}</strong><br>
                     R$ ${item.preco.toFixed(2)}<br>
-                    <small>⚖️ Peso: ${item.peso}g | ${item.qtdPecas} peça(s)</small>
-                    ${item.descricao ? `<div style="font-size:0.8rem; color:#666;">📝 ${item.descricao.substring(0,50)}</div>` : ""}
+                    <small>⚖️ Peso: ${item.peso}g</small>
+                    ${item.descricao ? `<div style="font-size:0.8rem;">📝 ${item.descricao.substring(0,50)}</div>` : ""}
                     ${item.anexo ? `<div style="font-size:0.8rem;"><a href="${item.anexo}" download="anexo_${idx}">📎 Baixar anexo</a></div>` : ""}
                 </div>
                 <div>
-                    <button onclick="removerItem(${idx})" style="background:#dc3545;">🗑 Remover</button>
+                    <button onclick="removerItem(${idx})" class="btn-danger">🗑 Remover</button>
                 </div>
             </div>
         `).join("");
@@ -592,35 +605,31 @@
         atualizarContadorCarrinho();
     }
     
-    function calcularPesoTotal() {
-        return carrinho.reduce((s, i) => s + i.peso, 0);
-    }
-    
     function calcularSubtotal() {
         return carrinho.reduce((s, i) => s + i.preco, 0);
+    }
+    
+    function calcularPesoTotal() {
+        return carrinho.reduce((s, i) => s + i.peso, 0);
     }
     
     function atualizarTotal() {
         const subtotal = calcularSubtotal();
         const total = subtotal + freteValor;
         const div = document.getElementById("total-carrinho");
-        const pesoTotal = calcularPesoTotal();
-        
         if (div) {
             div.innerHTML = `
                 <div>Subtotal: R$ ${subtotal.toFixed(2)}</div>
-                <div>⚖️ Peso total: ${pesoTotal}g (${(pesoTotal/1000).toFixed(2)}kg)</div>
+                <div>⚖️ Peso total: ${calcularPesoTotal()}g (${(calcularPesoTotal()/1000).toFixed(2)}kg)</div>
                 <div>Frete: R$ ${freteValor.toFixed(2)}</div>
-                <div style="font-size:1.3rem; margin-top:10px;">Total: R$ ${total.toFixed(2)}</div>
+                <div style="font-size:1.3rem;">Total: R$ ${total.toFixed(2)}</div>
             `;
         }
-        
-        // Verificar pedido mínimo
         const alerta = document.getElementById("alerta-minimo");
         const btnFinalizar = document.getElementById("btn-finalizar");
         if (subtotal < PEDIDO_MINIMO) {
             alerta.style.display = "block";
-            alerta.innerHTML = `⚠️ Pedido mínimo: R$ ${PEDIDO_MINIMO.toFixed(2)}. Faltam R$ ${(PEDIDO_MINIMO - subtotal).toFixed(2)} para finalizar.`;
+            alerta.innerHTML = `⚠️ Pedido mínimo: R$ ${PEDIDO_MINIMO.toFixed(2)}. Faltam R$ ${(PEDIDO_MINIMO - subtotal).toFixed(2)}`;
             if (btnFinalizar) btnFinalizar.disabled = true;
         } else {
             alerta.style.display = "none";
@@ -629,46 +638,24 @@
     }
     
     function atualizarContadorCarrinho() {
-        const count = carrinho.length;
-        const span = document.getElementById("cart-count");
-        if (span) span.innerText = count;
+        document.getElementById("cart-count").innerText = carrinho.length;
     }
     
-    // ========== FRETE (baseado no peso total) ==========
     function calcularFrete() {
         const cep = document.getElementById("cep").value;
-        if (!cep) {
-            alert("Digite um CEP");
-            return;
-        }
-        
-        const pesoTotal = calcularPesoTotal();
-        const pesoKg = pesoTotal / 1000;
-        
-        // Simulação de frete baseada no peso
+        if (!cep) { alert("Digite um CEP"); return; }
+        const pesoKg = calcularPesoTotal() / 1000;
         let valorBase = 10;
         if (pesoKg <= 0.5) valorBase = 12;
         else if (pesoKg <= 1) valorBase = 15;
         else if (pesoKg <= 2) valorBase = 20;
         else if (pesoKg <= 5) valorBase = 30;
         else valorBase = 45;
-        
-        // Fator regional baseado no CEP
         const cepNum = parseInt(cep.replace(/\D/g, '')) || 0;
-        const ultimoDigito = cepNum % 10;
-        let fator = 1;
-        if (ultimoDigito < 3) fator = 0.9;
-        else if (ultimoDigito < 6) fator = 1.1;
-        else fator = 1.3;
-        
+        const fator = (cepNum % 10) < 3 ? 0.9 : (cepNum % 10) < 6 ? 1.1 : 1.3;
         freteValor = Math.max(9.9, valorBase * fator);
         fretePrazo = Math.min(12, Math.max(2, Math.floor(3 + pesoKg * 1.5)));
-        
-        document.getElementById("frete-resultado").innerHTML = `
-            <span style="color:green;">✅ Frete: R$ ${freteValor.toFixed(2)}</span><br>
-            <span>📦 Prazo: ${fretePrazo} dias úteis</span><br>
-            <span>⚖️ Peso calculado: ${pesoKg.toFixed(2)}kg</span>
-        `;
+        document.getElementById("frete-resultado").innerHTML = `✅ Frete: R$ ${freteValor.toFixed(2)} | Prazo: ${fretePrazo} dias | Peso: ${pesoKg.toFixed(2)}kg`;
         atualizarTotal();
     }
     
@@ -676,19 +663,23 @@
     function finalizarCompra() {
         if (carrinho.length === 0) return alert("Carrinho vazio");
         if (!clienteAtual) {
-            alert("Faça login para finalizar a compra");
+            alert("Faça login para finalizar");
             mostrarSecao("cliente");
             return;
         }
-        
         const subtotal = calcularSubtotal();
         if (subtotal < PEDIDO_MINIMO) {
-            alert(`Pedido mínimo: R$ ${PEDIDO_MINIMO.toFixed(2)}. Seu subtotal: R$ ${subtotal.toFixed(2)}`);
+            alert(`Pedido mínimo: R$ ${PEDIDO_MINIMO}`);
             return;
         }
         
-        // Prazo de produção: 7 a 15 dias úteis
-        const prazoProducao = Math.floor(Math.random() * (15 - 7 + 1) + 7);
+        const prazoProducao = Math.floor(Math.random() * 9) + 7;
+        let data = new Date();
+        let dias = 0;
+        while (dias < (prazoProducao + fretePrazo)) {
+            data.setDate(data.getDate() + 1);
+            if (data.getDay() !== 0 && data.getDay() !== 6) dias++;
+        }
         
         const pedido = {
             id: Date.now(),
@@ -701,35 +692,290 @@
             subtotal: subtotal,
             frete: freteValor,
             total: subtotal + freteValor,
-            pesoTotal: calcularPesoTotal(),
-            prazoProducao: prazoProducao,
-            fretePrazo: fretePrazo,
-            prazoTotal: prazoProducao + fretePrazo,
             status: "Pendente",
-            aprovado: false
+            previsaoEntrega: data.toLocaleDateString('pt-BR')
         };
-        
-        // Calcular data estimada
-        let data = new Date();
-        let dias = 0;
-        while (dias < pedido.prazoTotal) {
-            data.setDate(data.getDate() + 1);
-            if (data.getDay() !== 0 && data.getDay() !== 6) dias++;
-        }
-        pedido.previsaoEntrega = data.toLocaleDateString('pt-BR');
-        
         pedidos.unshift(pedido);
         salvarDados();
-        
         carrinho = [];
         freteValor = 0;
         salvarDados();
         mostrarCarrinho();
         atualizarContadorCarrinho();
-        
-        alert(`✅ Pedido #${pedido.id} finalizado!\nPrevisão de entrega: ${pedido.previsaoEntrega}`);
+        alert(`✅ Pedido #${pedido.id} finalizado!\nPrevisão: ${pedido.previsaoEntrega}`);
         mostrarSecao("produtos");
     }
     
-    // ========== FOLHA DE ROSTO / APROVAÇÃO ==========
-    function abrirFolhaRosto(pedido) {
+    // ========== EXPORTAR PARA GOOGLE DRIVE ==========
+    function exportarTodosAnexos() {
+        const zip = new JSZip();
+        let count = 0;
+        
+        pedidos.forEach(pedido => {
+            const pastaPedido = zip.folder(`Pedido_${pedido.id}_${pedido.clienteNome.replace(/[^a-z0-9]/gi, '_')}`);
+            if (pedido.itens && pedido.itens.length) {
+                pedido.itens.forEach((item, idx) => {
+                    if (item.anexo && item.anexo.startsWith('data:')) {
+                        const ext = item.anexo.includes('pdf') ? 'pdf' : 'jpg';
+                        const nomeArquivo = `${String(idx+1).padStart(2,'0')}_${item.nome.replace(/[^a-z0-9]/gi, '_')}.${ext}`;
+                        const base64 = item.anexo.split(',')[1];
+                        pastaPedido.file(nomeArquivo, base64, {base64: true});
+                        count++;
+                    }
+                    if (item.descricao) {
+                        pastaPedido.file(`descricao_item${idx+1}.txt`, item.descricao);
+                    }
+                });
+            }
+        });
+        
+        if (count === 0) {
+            alert("Nenhum anexo encontrado nos pedidos");
+            return;
+        }
+        
+        zip.generateAsync({type: "blob"}).then(content => {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(content);
+            link.download = `todos_anexos_organizados_${new Date().toISOString().slice(0,19)}.zip`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            alert(`${count} arquivos organizados! Descompacte e envie para a pasta do Google Drive.`);
+        });
+    }
+    
+    // ========== ADMIN ==========
+    function mostrarAdmin() {
+        mostrarSecao("admin");
+        document.getElementById("admin-login").style.display = "block";
+        document.getElementById("admin-painel").style.display = "none";
+    }
+    
+    function loginAdmin() {
+        const senha = document.getElementById("admin-senha").value;
+        if (senha === ADMIN_SENHA) {
+            adminLogado = true;
+            document.getElementById("admin-login").style.display = "none";
+            document.getElementById("admin-painel").style.display = "block";
+            mostrarAdminProdutos();
+            mostrarAdminPedidos();
+            mostrarAdminClientes();
+        } else alert("Senha incorreta");
+    }
+    
+    function logoutAdmin() {
+        adminLogado = false;
+        mostrarAdmin();
+        document.getElementById("admin-senha").value = "";
+    }
+    
+    function mostrarAdminProdutos() {
+        const tbody = document.getElementById("admin-produtos-lista");
+        if (!tbody) return;
+        tbody.innerHTML = produtos.map(prod => `
+            <tr><td>${prod.id}</td><td>${prod.nome}</td><td>R$ ${prod.preco}</td><td>${prod.peso}g</td>
+            <td><button onclick="excluirProduto(${prod.id})" class="btn-danger">Excluir</button></td></tr>
+        `).join("");
+    }
+    
+    function excluirProduto(id) {
+        if (confirm("Remover produto?")) {
+            produtos = produtos.filter(p => p.id !== id);
+            salvarDados();
+            mostrarAdminProdutos();
+            renderizarProdutos();
+        }
+    }
+    
+    function adicionarProduto() {
+        const nome = document.getElementById("novo-nome").value;
+        const preco = parseFloat(document.getElementById("novo-preco").value);
+        const peso = parseInt(document.getElementById("novo-peso").value);
+        const imagem = document.getElementById("nova-imagem").value || "https://picsum.photos/id/1/200/200";
+        const categoria = document.getElementById("nova-categoria").value;
+        if (!nome || isNaN(preco)) return alert("Preencha nome e preço");
+        produtos.push({ id: Date.now(), nome, preco, peso, imagem, categoria, subcategoria: "Padrão" });
+        salvarDados();
+        mostrarAdminProdutos();
+        renderizarProdutos();
+        document.getElementById("novo-nome").value = "";
+        document.getElementById("novo-preco").value = "";
+        document.getElementById("novo-peso").value = "";
+    }
+    
+    function mostrarAdminPedidos() {
+        const container = document.getElementById("admin-pedidos-lista");
+        if (!container) return;
+        if (pedidos.length === 0) {
+            container.innerHTML = "<p>Nenhum pedido</p>";
+            return;
+        }
+        container.innerHTML = `
+            <table>
+                <thead><tr><th>ID</th><th>Cliente</th><th>Data</th><th>Itens</th><th>Total</th><th>Anexos</th><th>Status</th></tr></thead>
+                <tbody>
+                    ${pedidos.map(ped => `
+                        <tr>
+                            <td>#${ped.id}</td>
+                            <td>${ped.clienteNome}</td>
+                            <td>${ped.data}</td>
+                            <td>${ped.itens.length}</td>
+                            <td>R$ ${ped.total.toFixed(2)}</td>
+                            <td>${ped.itens.filter(i => i.anexo).length}</td>
+                            <td>
+                                <select onchange="alterarStatus(${ped.id}, this.value)">
+                                    <option ${ped.status === "Pendente" ? "selected" : ""}>Pendente</option>
+                                    <option ${ped.status === "Aprovado" ? "selected" : ""}>Aprovado</option>
+                                    <option ${ped.status === "Produção" ? "selected" : ""}>Produção</option>
+                                    <option ${ped.status === "Enviado" ? "selected" : ""}>Enviado</option>
+                                </select>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+    
+    function alterarStatus(id, novoStatus) {
+        const pedido = pedidos.find(p => p.id === id);
+        if (pedido) pedido.status = novoStatus;
+        salvarDados();
+        mostrarAdminPedidos();
+        if (clienteAtual) mostrarMeusPedidos();
+    }
+    
+    function mostrarAdminClientes() {
+        const container = document.getElementById("admin-clientes-lista");
+        if (!container) return;
+        container.innerHTML = `
+            <table>
+                <thead><tr><th>ID</th><th>Nome</th><th>Email</th><th>Telefone</th><th>Pedidos</th></tr></thead>
+                <tbody>
+                    ${clientes.map(c => `
+                        <tr>
+                            <td>${c.id}</td>
+                            <td>${c.nome}</td>
+                            <td>${c.email}</td>
+                            <td>${c.telefone || '-'}</td>
+                            <td>${pedidos.filter(p => p.clienteId === c.id).length}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+    
+    function mudarAdminTab(tab) {
+        document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("ativo"));
+        document.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("ativo"));
+        if (tab === "produtos") {
+            document.querySelectorAll(".admin-tab")[2].classList.add("ativo");
+            document.getElementById("admin-produtos-panel").classList.add("ativo");
+        } else if (tab === "pedidos") {
+            document.querySelectorAll(".admin-tab")[0].classList.add("ativo");
+            document.getElementById("admin-pedidos-panel").classList.add("ativo");
+            mostrarAdminPedidos();
+        } else if (tab === "clientes") {
+            document.querySelectorAll(".admin-tab")[1].classList.add("ativo");
+            document.getElementById("admin-clientes-panel").classList.add("ativo");
+            mostrarAdminClientes();
+        }
+    }
+    
+    // ========== CLIENTES ==========
+    function cadastrarCliente() {
+        const nome = document.getElementById("cad-nome").value;
+        const email = document.getElementById("cad-email").value;
+        const telefone = document.getElementById("cad-telefone").value;
+        const senha = document.getElementById("cad-senha").value;
+        const confirma = document.getElementById("cad-confirma").value;
+        if (!nome || !email || !senha) return alert("Preencha todos os campos");
+        if (senha !== confirma) return alert("Senhas não coincidem");
+        if (clientes.find(c => c.email === email)) return alert("Email já cadastrado");
+        clientes.push({ id: Date.now(), nome, email, telefone, senha });
+        salvarDados();
+        alert("Cadastro realizado! Faça login.");
+        mostrarSecao("cliente");
+        document.getElementById("login-email").value = email;
+    }
+    
+    function loginCliente() {
+        const email = document.getElementById("login-email").value;
+        const senha = document.getElementById("login-senha").value;
+        const cliente = clientes.find(c => c.email === email && c.senha === senha);
+        if (cliente) {
+            clienteAtual = cliente;
+            localStorage.setItem("prestige_cliente_atual", JSON.stringify(cliente));
+            mostrarPainelCliente();
+        } else alert("Email ou senha incorretos");
+    }
+    
+    function mostrarPainelCliente() {
+        document.getElementById("cliente-deslogado").style.display = "none";
+        document.getElementById("cliente-logado").style.display = "block";
+        document.getElementById("info-cliente").innerHTML = `
+            <p><strong>${clienteAtual.nome}</strong></p>
+            <p>📧 ${clienteAtual.email}</p>
+            <p>📞 ${clienteAtual.telefone || "Não informado"}</p>
+        `;
+        mostrarMeusPedidos();
+    }
+    
+    function mostrarMeusPedidos() {
+        const meusPedidos = pedidos.filter(p => p.clienteId === clienteAtual.id);
+        const container = document.getElementById("meus-pedidos");
+        if (meusPedidos.length === 0) {
+            container.innerHTML = "<p>Nenhum pedido</p>";
+            return;
+        }
+        container.innerHTML = meusPedidos.map(ped => `
+            <div style="background:white; padding:1rem; border-radius:12px; margin-bottom:1rem;">
+                <div><strong>Pedido #${ped.id}</strong> - ${ped.data}</div>
+                <div>Status: ${ped.status}</div>
+                <div>Previsão: ${ped.previsaoEntrega}</div>
+                <div>Total: R$ ${ped.total.toFixed(2)}</div>
+                <details><summary>Ver itens</summary>
+                    ${ped.itens.map(i => `<div>📦 ${i.nome} - R$ ${i.preco.toFixed(2)}</div>`).join("")}
+                </details>
+            </div>
+        `).join("");
+    }
+    
+    function logoutCliente() {
+        clienteAtual = null;
+        localStorage.removeItem("prestige_cliente_atual");
+        document.getElementById("cliente-deslogado").style.display = "block";
+        document.getElementById("cliente-logado").style.display = "none";
+    }
+    
+    function mostrarCadastro() {
+        mostrarSecao("cadastro");
+    }
+    
+    // ========== NAVEGAÇÃO ==========
+    function mostrarSecao(secao) {
+        document.querySelectorAll(".secao").forEach(s => s.classList.remove("ativa"));
+        document.getElementById(`secao-${secao}`).classList.add("ativa");
+        if (secao === "carrinho") mostrarCarrinho();
+        if (secao === "cliente") {
+            if (clienteAtual) mostrarPainelCliente();
+            else {
+                document.getElementById("cliente-deslogado").style.display = "block";
+                document.getElementById("cliente-logado").style.display = "none";
+            }
+        }
+    }
+    
+    // ========== INICIALIZAÇÃO ==========
+    carregarDados();
+    renderizarCategorias();
+    renderizarProdutos();
+    mostrarCarrinho();
+    atualizarContadorCarrinho();
+    
+    const savedCliente = localStorage.getItem("prestige_cliente_atual");
+    if (savedCliente) clienteAtual = JSON.parse(savedCliente);
+</script>
+</body>
+</html>
