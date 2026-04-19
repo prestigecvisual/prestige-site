@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prestige Visual - Sua Arte em Produtos</title>
+    <title>Prestige Visual - Sistema Profissional</title>
     <style>
         * {
             margin: 0;
@@ -14,7 +14,6 @@
         body {
             background: #f5f5f5;
             color: #333;
-            line-height: 1.6;
         }
         header {
             background: #111;
@@ -24,80 +23,97 @@
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        header nav a {
+        .logo { font-size: 1.5rem; font-weight: bold; }
+        nav a {
             margin-left: 1rem;
             color: #fff;
             cursor: pointer;
             text-decoration: none;
         }
-        header nav a:hover {
-            color: #f0a500;
-        }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        .banner-simples {
+        nav a:hover { color: #f0a500; }
+        
+        .banner {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             text-align: center;
-            padding: 60px 20px;
-            margin: 0;
+            padding: 40px 20px;
         }
+        
+        .categorias {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 1rem 2rem;
+            background: white;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 70px;
+            z-index: 99;
+        }
+        .categoria-btn {
+            background: #e9ecef;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .categoria-btn.ativo, .categoria-btn:hover {
+            background: #0077cc;
+            color: white;
+        }
+        
         .grid-produtos {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
             gap: 1.5rem;
             padding: 2rem;
         }
         .produto-card {
-            background: #fff;
-            padding: 1rem;
+            background: white;
             border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.3s;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             cursor: pointer;
+            transition: transform 0.3s;
         }
-        .produto-card:hover {
-            transform: translateY(-5px);
-        }
+        .produto-card:hover { transform: translateY(-5px); }
         .produto-card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            border-radius: 8px;
-            background: #f0f0f0;
         }
-        .produto-card h3 {
-            margin: 1rem 0 0.5rem;
+        .produto-card h3, .produto-card .preco {
+            padding: 0.5rem 1rem;
+        }
+        .produto-card .preco {
+            color: #f05a28;
+            font-weight: bold;
             font-size: 1.2rem;
         }
-        .preco {
-            font-weight: bold;
-            color: #f05a28;
-            font-size: 1.3rem;
-            margin: 0.5rem 0;
+        .produto-card .peso {
+            padding: 0 1rem;
+            font-size: 0.8rem;
+            color: #666;
         }
-        .btn-personalizar {
+        .produto-card button {
+            margin: 0.5rem 1rem 1rem;
+            width: calc(100% - 2rem);
             background: #0077cc;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 10px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 1rem;
-            width: 100%;
-            margin-top: 10px;
         }
-        .secao {
-            display: none;
-            padding: 2rem;
-        }
-        .secao.ativa {
-            display: block;
-        }
+        
+        .secao { display: none; padding: 2rem; }
+        .secao.ativa { display: block; }
+        
         .carrinho-item {
             background: white;
             padding: 1rem;
@@ -105,9 +121,10 @@
             border-radius: 8px;
             display: flex;
             justify-content: space-between;
-            align-items: center;
             flex-wrap: wrap;
+            align-items: center;
         }
+        
         .frete-area {
             background: #fef7e0;
             padding: 1rem;
@@ -120,21 +137,11 @@
             gap: 10px;
             margin: 15px 0;
         }
-        .frete-campos input {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-        .total {
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 12px;
-            margin: 1rem 0;
-            font-weight: bold;
-            font-size: 1.2rem;
-        }
-        button {
+        .frete-campos input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        
+        .total { background: #f8f9fa; padding: 1rem; border-radius: 12px; margin: 1rem 0; font-weight: bold; }
+        
+        button, .btn {
             background: #0077cc;
             color: white;
             border: none;
@@ -142,99 +149,9 @@
             border-radius: 6px;
             cursor: pointer;
         }
-        .btn-voltar {
-            background: #6c757d;
-            margin-bottom: 1rem;
-        }
+        .btn-voltar { background: #6c757d; margin-bottom: 1rem; }
+        .btn-danger { background: #dc3545; }
         
-        /* Login e Cadastro */
-        .login-container, .cadastro-container {
-            max-width: 400px;
-            margin: 2rem auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        }
-        .login-container h2, .cadastro-container h2 {
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
-        .login-container input, .cadastro-container input {
-            width: 100%;
-            padding: 10px;
-            margin: 8px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-        }
-        .login-container button, .cadastro-container button {
-            width: 100%;
-            margin-top: 1rem;
-        }
-        .link-cadastro {
-            text-align: center;
-            margin-top: 1rem;
-        }
-        .link-cadastro a {
-            color: #0077cc;
-            cursor: pointer;
-        }
-        
-        /* Admin */
-        .admin-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 2rem;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
-            flex-wrap: wrap;
-        }
-        .admin-tab {
-            background: #e9ecef;
-            color: #333;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .admin-tab.ativo {
-            background: #0077cc;
-            color: white;
-        }
-        .admin-panel {
-            display: none;
-        }
-        .admin-panel.ativo {
-            display: block;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background: #f8f9fa;
-        }
-        .status-select {
-            padding: 5px 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-        }
-        .btn-editar, .btn-excluir {
-            padding: 5px 10px;
-            margin: 0 3px;
-            font-size: 0.8rem;
-        }
-        .btn-editar { background: #ffc107; color: #333; }
-        .btn-excluir { background: #dc3545; }
-        
-        /* Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -256,24 +173,100 @@
             max-height: 90%;
             overflow: auto;
         }
-        .prazo-info {
-            background: #e8f4fd;
+        
+        /* Folha de Rosto */
+        .folha-rosto {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .folha-rosto .header {
+            text-align: center;
+            border-bottom: 2px solid #0077cc;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        .folha-rosto .info-cliente {
+            background: #f8f9fa;
             padding: 1rem;
             border-radius: 8px;
-            margin: 1rem 0;
-            font-size: 0.9rem;
+            margin-bottom: 1rem;
         }
+        .folha-rosto .item-pedido {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+        .folha-rosto .layout-cliente {
+            background: #fafafa;
+            padding: 1rem;
+            text-align: center;
+            border: 2px dashed #0077cc;
+            margin: 1rem 0;
+        }
+        .folha-rosto .layout-cliente img { max-width: 100%; max-height: 200px; }
+        .folha-rosto .aprovacao {
+            margin-top: 2rem;
+            text-align: center;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
+        
+        /* Admin */
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .admin-tab {
+            background: #e9ecef;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .admin-tab.ativo { background: #0077cc; color: white; }
+        .admin-panel { display: none; }
+        .admin-panel.ativo { display: block; }
+        
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; }
+        
+        .pedido-card {
+            background: white;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+        }
+        .pedido-card:hover { background: #f8f9fa; }
+        
+        .anexo-img {
+            max-width: 50px;
+            max-height: 50px;
+            cursor: pointer;
+        }
+        
+        @media print {
+            header, nav, .categorias, .btn-voltar, .admin-tabs, button:not(.print-btn) { display: none; }
+            .folha-rosto { margin: 0; padding: 0; }
+            body { background: white; }
+        }
+        
         @media (max-width: 768px) {
-            .grid-produtos {
-                grid-template-columns: 1fr;
-                padding: 1rem;
-            }
-            table {
-                font-size: 0.7rem;
-            }
-            th, td {
-                padding: 6px;
-            }
+            .grid-produtos { grid-template-columns: 1fr; padding: 1rem; }
+            .categorias { overflow-x: auto; white-space: nowrap; flex-wrap: nowrap; }
         }
     </style>
 </head>
@@ -285,14 +278,18 @@
         <a onclick="mostrarSecao('produtos')">🏠 Produtos</a>
         <a onclick="mostrarSecao('carrinho')">🛒 Carrinho (<span id="cart-count">0</span>)</a>
         <a onclick="mostrarSecao('cliente')">👤 Minha Conta</a>
-        <a onclick="mostrarAdminLogin()">🔧 Admin</a>
+        <a onclick="mostrarAdmin()">🔧 Admin</a>
     </nav>
 </header>
 
-<div class="banner-simples">
+<div class="banner">
     <h1>✨ Produtos Personalizados</h1>
     <p>Chaveiros, Troféus, Placas e muito mais com sua arte!</p>
+    <p style="font-size:0.9rem; margin-top:10px;">⚠️ Pedido mínimo: R$ 250,00</p>
 </div>
+
+<!-- Categorias -->
+<div class="categorias" id="categorias"></div>
 
 <!-- Produtos -->
 <div id="secao-produtos" class="secao ativa">
@@ -306,21 +303,17 @@
     <div id="carrinho-lista"></div>
     
     <div class="frete-area">
-        <h3>✈️ Calcular Frete e Prazo</h3>
+        <h3>✈️ Calcular Frete</h3>
         <div class="frete-campos">
-            <input type="text" id="cep" placeholder="CEP">
-            <input type="number" id="peso" step="0.1" placeholder="Peso (kg)">
-            <input type="number" id="altura" step="0.5" placeholder="Altura (cm)">
-            <input type="number" id="largura" step="0.5" placeholder="Largura (cm)">
-            <input type="number" id="comprimento" step="0.5" placeholder="Comprimento (cm)">
-            <button onclick="calcularFrete()">Calcular</button>
+            <input type="text" id="cep" placeholder="CEP (ex: 01000-000)">
+            <button onclick="calcularFrete()">Calcular Frete</button>
         </div>
         <div id="frete-resultado"></div>
-        <div class="prazo-info" id="prazo-info" style="display:none;"></div>
     </div>
     
     <div class="total" id="total-carrinho"></div>
-    <button onclick="finalizarCompra()">✅ Finalizar Compra</button>
+    <div id="alerta-minimo" style="display:none; background:#ffc107; color:#333; padding:1rem; border-radius:8px; margin:1rem 0;"></div>
+    <button id="btn-finalizar" onclick="finalizarCompra()">✅ Finalizar Compra</button>
 </div>
 
 <!-- Área do Cliente -->
@@ -328,20 +321,18 @@
     <button class="btn-voltar" onclick="mostrarSecao('produtos')">← Voltar</button>
     <div id="cliente-logado" style="display:none;">
         <h2>👤 Minha Conta</h2>
-        <div id="info-cliente"></div>
+        <div id="info-cliente" style="background:white; padding:1rem; border-radius:12px; margin-bottom:1rem;"></div>
         <h3>📦 Meus Pedidos</h3>
         <div id="meus-pedidos"></div>
-        <button onclick="logoutCliente()" style="background:#dc3545; margin-top:1rem;">Sair da Conta</button>
+        <button onclick="logoutCliente()" class="btn-danger">Sair</button>
     </div>
     <div id="cliente-deslogado">
-        <div class="login-container">
-            <h2>🔐 Login do Cliente</h2>
-            <input type="email" id="login-email" placeholder="E-mail">
-            <input type="password" id="login-senha" placeholder="Senha">
-            <button onclick="loginCliente()">Entrar</button>
-            <div class="link-cadastro">
-                <a onclick="mostrarCadastro()">Não tem conta? Cadastre-se</a>
-            </div>
+        <div style="max-width:400px; margin:0 auto; background:white; padding:2rem; border-radius:16px;">
+            <h2>🔐 Login</h2>
+            <input type="email" id="login-email" placeholder="E-mail" style="width:100%; margin:8px 0; padding:10px;">
+            <input type="password" id="login-senha" placeholder="Senha" style="width:100%; margin:8px 0; padding:10px;">
+            <button onclick="loginCliente()" style="width:100%">Entrar</button>
+            <p style="text-align:center; margin-top:1rem;"><a onclick="mostrarCadastro()" style="cursor:pointer; color:#0077cc;">Não tem conta? Cadastre-se</a></p>
         </div>
     </div>
 </div>
@@ -349,85 +340,75 @@
 <!-- Cadastro -->
 <div id="secao-cadastro" class="secao">
     <button class="btn-voltar" onclick="mostrarSecao('cliente')">← Voltar</button>
-    <div class="cadastro-container">
-        <h2>📝 Cadastro de Cliente</h2>
-        <input type="text" id="cad-nome" placeholder="Nome completo">
-        <input type="email" id="cad-email" placeholder="E-mail">
-        <input type="tel" id="cad-telefone" placeholder="Telefone (WhatsApp)">
-        <input type="password" id="cad-senha" placeholder="Senha">
-        <input type="password" id="cad-confirma" placeholder="Confirmar senha">
-        <button onclick="cadastrarCliente()">Cadastrar</button>
+    <div style="max-width:400px; margin:0 auto; background:white; padding:2rem; border-radius:16px;">
+        <h2>📝 Cadastro</h2>
+        <input type="text" id="cad-nome" placeholder="Nome completo" style="width:100%; margin:8px 0; padding:10px;">
+        <input type="email" id="cad-email" placeholder="E-mail" style="width:100%; margin:8px 0; padding:10px;">
+        <input type="tel" id="cad-telefone" placeholder="Telefone" style="width:100%; margin:8px 0; padding:10px;">
+        <input type="password" id="cad-senha" placeholder="Senha" style="width:100%; margin:8px 0; padding:10px;">
+        <input type="password" id="cad-confirma" placeholder="Confirmar senha" style="width:100%; margin:8px 0; padding:10px;">
+        <button onclick="cadastrarCliente()" style="width:100%">Cadastrar</button>
     </div>
 </div>
 
-<!-- Admin (protegido) -->
+<!-- Admin -->
 <div id="secao-admin" class="secao">
     <button class="btn-voltar" onclick="mostrarSecao('produtos')">← Voltar</button>
     <div id="admin-login" style="display:none;">
-        <div class="login-container">
-            <h2>🔐 Login Administrativo</h2>
-            <input type="password" id="admin-senha" placeholder="Senha Admin">
+        <div style="max-width:400px; margin:0 auto; background:white; padding:2rem; border-radius:16px;">
+            <h2>🔐 Admin Login</h2>
+            <input type="password" id="admin-senha" placeholder="Senha" style="width:100%; margin:8px 0; padding:10px;">
             <button onclick="loginAdmin()">Entrar</button>
         </div>
     </div>
     <div id="admin-painel" style="display:none;">
         <h2>🛠️ Painel Administrativo</h2>
         <div class="admin-tabs">
-            <div class="admin-tab ativo" onclick="mudarAdminTab('produtos')">📦 Produtos</div>
-            <div class="admin-tab" onclick="mudarAdminTab('pedidos')">📋 Pedidos</div>
+            <div class="admin-tab ativo" onclick="mudarAdminTab('pedidos')">📋 Pedidos</div>
             <div class="admin-tab" onclick="mudarAdminTab('clientes')">👥 Clientes</div>
-            <div class="admin-tab" onclick="mudarAdminTab('exportar')">📎 Exportar</div>
+            <div class="admin-tab" onclick="mudarAdminTab('produtos')">📦 Produtos</div>
         </div>
         
-        <div id="admin-produtos-panel" class="admin-panel ativo">
-            <div style="background: white; padding: 1rem; border-radius: 12px; margin-bottom: 1rem;">
-                <h3>➕ Adicionar Produto</h3>
-                <input type="text" id="novo-nome" placeholder="Nome" style="width:100%; margin:5px 0; padding:8px;">
-                <input type="number" id="novo-preco" placeholder="Preço" style="width:100%; margin:5px 0; padding:8px;">
-                <input type="text" id="nova-imagem" placeholder="URL imagem" style="width:100%; margin:5px 0; padding:8px;">
-                <button onclick="adicionarProduto()">Adicionar</button>
-            </div>
-            <table>
-                <thead><tr><th>ID</th><th>Imagem</th><th>Produto</th><th>Preço</th><th>Ações</th></tr></thead>
-                <tbody id="admin-produtos-lista"></tbody>
-            </table>
-        </div>
-        
-        <div id="admin-pedidos-panel" class="admin-panel">
-            <table>
-                <thead><tr><th>Pedido</th><th>Cliente</th><th>Data</th><th>Itens</th><th>Total</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead>
-                <tbody id="admin-pedidos-lista"></tbody>
-            </table>
+        <div id="admin-pedidos-panel" class="admin-panel ativo">
+            <div id="admin-pedidos-lista"></div>
         </div>
         
         <div id="admin-clientes-panel" class="admin-panel">
-            <table>
-                <thead><tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Telefone</th><th>Pedidos</th><th>Ações</th></tr></thead>
-                <tbody id="admin-clientes-lista"></tbody>
-            </table>
+            <div id="admin-clientes-lista"></div>
         </div>
         
-        <div id="admin-exportar-panel" class="admin-panel">
-            <div style="background:white; padding:2rem; border-radius:12px; text-align:center;">
-                <h3>📎 Exportar Dados</h3>
-                <button onclick="exportarPedidosJSON()">📄 JSON</button>
-                <button onclick="exportarPedidosCSV()">📊 CSV</button>
+        <div id="admin-produtos-panel" class="admin-panel">
+            <div style="background:white; padding:1rem; border-radius:12px; margin-bottom:1rem;">
+                <h3>➕ Adicionar Produto</h3>
+                <input type="text" id="novo-nome" placeholder="Nome" style="width:100%; margin:5px 0; padding:8px;">
+                <input type="number" id="novo-preco" placeholder="Preço" style="width:100%; margin:5px 0; padding:8px;">
+                <input type="number" id="novo-peso" placeholder="Peso (gramas)" style="width:100%; margin:5px 0; padding:8px;">
+                <input type="text" id="nova-imagem" placeholder="URL imagem" style="width:100%; margin:5px 0; padding:8px;">
+                <select id="nova-categoria" style="width:100%; margin:5px 0; padding:8px;">
+                    <option value="Chaveiro">Chaveiro</option>
+                    <option value="Troféu">Troféu</option>
+                    <option value="Placa">Placa</option>
+                    <option value="Adesivo">Adesivo</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                <button onclick="adicionarProduto()">Adicionar</button>
             </div>
+            <div id="admin-produtos-lista"></div>
         </div>
-        <button onclick="logoutAdmin()" style="background:#dc3545; margin-top:1rem;">Sair do Admin</button>
+        <button onclick="logoutAdmin()" class="btn-danger" style="margin-top:1rem;">Sair do Admin</button>
     </div>
 </div>
 
 <script>
-    // DADOS
+    // ========== DADOS ==========
     let produtos = [
-        { id: 1, nome: "Chaveiro Acrílico", preco: 12.90, imagem: "https://picsum.photos/id/1/200/200" },
-        { id: 2, nome: "Chaveiro MDF", preco: 9.90, imagem: "https://picsum.photos/id/2/200/200" },
-        { id: 3, nome: "Placa ACM", preco: 45.90, imagem: "https://picsum.photos/id/3/200/200" },
-        { id: 4, nome: "Placa PVC 2mm", preco: 32.90, imagem: "https://picsum.photos/id/4/200/200" },
-        { id: 5, nome: "Troféu Acrílico", preco: 55.90, imagem: "https://picsum.photos/id/5/200/200" },
-        { id: 6, nome: "Troféu MDF", preco: 48.90, imagem: "https://picsum.photos/id/6/200/200" },
-        { id: 7, nome: "Troféu Combo", preco: 69.90, imagem: "https://picsum.photos/id/7/200/200" }
+        { id: 1, nome: "Chaveiro Acrílico", preco: 12.90, peso: 50, imagem: "https://picsum.photos/id/1/200/200", categoria: "Chaveiro" },
+        { id: 2, nome: "Chaveiro MDF", preco: 9.90, peso: 40, imagem: "https://picsum.photos/id/2/200/200", categoria: "Chaveiro" },
+        { id: 3, nome: "Placa ACM", preco: 45.90, peso: 200, imagem: "https://picsum.photos/id/3/200/200", categoria: "Placa" },
+        { id: 4, nome: "Placa PVC 2mm", preco: 32.90, peso: 150, imagem: "https://picsum.photos/id/4/200/200", categoria: "Placa" },
+        { id: 5, nome: "Troféu Acrílico", preco: 55.90, peso: 350, imagem: "https://picsum.photos/id/5/200/200", categoria: "Troféu" },
+        { id: 6, nome: "Troféu MDF", preco: 48.90, peso: 400, imagem: "https://picsum.photos/id/6/200/200", categoria: "Troféu" },
+        { id: 7, nome: "Adesivo Vinil", preco: 5.90, peso: 10, imagem: "https://picsum.photos/id/7/200/200", categoria: "Adesivo" }
     ];
     
     let carrinho = [];
@@ -435,37 +416,26 @@
     let fretePrazo = 0;
     let clienteAtual = null;
     let adminLogado = false;
+    let clientes = [];
+    let pedidos = [];
     
-    // Subcategorias
-    const subcategorias = {
-        "Chaveiro": ["Acrílico 3mm", "Acrílico 5mm", "Acrílico 10mm", "MDF 3mm", "MDF 5mm"],
-        "Troféu": ["Acrílico Pequeno", "Acrílico Médio", "Acrílico Grande", "MDF", "Combo"],
-        "Placa": ["ACM Branco", "ACM Fosco", "PVC 2mm", "PVC 3mm", "MDF"],
-        "Padrão": ["Personalizado"]
-    };
+    const ADMIN_SENHA = "admin123";
+    const PEDIDO_MINIMO = 250;
     
-    // Prazo de produção: mínimo 7, máximo 15 dias úteis
-    function calcularPrazoProducao() {
-        return Math.floor(Math.random() * (15 - 7 + 1) + 7);
-    }
+    // Categorias únicas
+    const categorias = [...new Set(produtos.map(p => p.categoria))].sort();
     
-    function calcularDataEntrega(diasUteis) {
-        let data = new Date();
-        let diasAdicionados = 0;
-        while (diasAdicionados < diasUteis) {
-            data.setDate(data.getDate() + 1);
-            if (data.getDay() !== 0 && data.getDay() !== 6) {
-                diasAdicionados++;
-            }
-        }
-        return data.toLocaleDateString('pt-BR');
-    }
-    
-    function getCategoria(nome) {
-        if (nome.includes("Chaveiro")) return "Chaveiro";
-        if (nome.includes("Troféu")) return "Troféu";
-        if (nome.includes("Placa")) return "Placa";
-        return "Padrão";
+    function carregarDados() {
+        const savedProdutos = localStorage.getItem("prestige_produtos");
+        if (savedProdutos) produtos = JSON.parse(savedProdutos);
+        const savedCarrinho = localStorage.getItem("prestige_carrinho");
+        if (savedCarrinho) carrinho = JSON.parse(savedCarrinho);
+        const savedClientes = localStorage.getItem("prestige_clientes");
+        if (savedClientes) clientes = JSON.parse(savedClientes);
+        const savedPedidos = localStorage.getItem("prestige_pedidos");
+        if (savedPedidos) pedidos = JSON.parse(savedPedidos);
+        const savedCliente = localStorage.getItem("prestige_cliente_atual");
+        if (savedCliente) clienteAtual = JSON.parse(savedCliente);
     }
     
     function salvarDados() {
@@ -475,442 +445,144 @@
         localStorage.setItem("prestige_pedidos", JSON.stringify(pedidos));
     }
     
-    function carregarDados() {
-        const saved = localStorage.getItem("prestige_produtos");
-        if (saved) produtos = JSON.parse(saved);
-        const savedCart = localStorage.getItem("prestige_carrinho");
-        if (savedCart) carrinho = JSON.parse(savedCart);
-    }
-    
-    // Clientes
-    let clientes = [];
-    let pedidos = [];
-    
-    function carregarClientes() {
-        const saved = localStorage.getItem("prestige_clientes");
-        if (saved) clientes = JSON.parse(saved);
-        const savedPedidos = localStorage.getItem("prestige_pedidos");
-        if (savedPedidos) pedidos = JSON.parse(savedPedidos);
-    }
-    
-    function cadastrarCliente() {
-        const nome = document.getElementById("cad-nome").value;
-        const email = document.getElementById("cad-email").value;
-        const telefone = document.getElementById("cad-telefone").value;
-        const senha = document.getElementById("cad-senha").value;
-        const confirma = document.getElementById("cad-confirma").value;
+    // ========== PRODUTOS E CATEGORIAS ==========
+    function renderizarCategorias() {
+        const container = document.getElementById("categorias");
+        container.innerHTML = `<button class="categoria-btn ativo" data-categoria="todos">📦 Todos</button>` +
+            categorias.map(cat => `<button class="categoria-btn" data-categoria="${cat}">${cat}</button>`).join("");
         
-        if (!nome || !email || !senha) {
-            alert("Preencha todos os campos");
-            return;
-        }
-        if (senha !== confirma) {
-            alert("Senhas não coincidem");
-            return;
-        }
-        if (clientes.find(c => c.email === email)) {
-            alert("E-mail já cadastrado");
-            return;
-        }
-        
-        const novoCliente = {
-            id: Date.now(),
-            nome, email, telefone, senha,
-            dataCadastro: new Date().toLocaleString()
-        };
-        clientes.push(novoCliente);
-        salvarDados();
-        alert("Cadastro realizado! Faça login.");
-        mostrarSecao("cliente");
-        document.getElementById("login-email").value = email;
-    }
-    
-    function loginCliente() {
-        const email = document.getElementById("login-email").value;
-        const senha = document.getElementById("login-senha").value;
-        const cliente = clientes.find(c => c.email === email && c.senha === senha);
-        if (cliente) {
-            clienteAtual = cliente;
-            localStorage.setItem("prestige_cliente_atual", JSON.stringify(cliente));
-            mostrarPainelCliente();
-        } else {
-            alert("E-mail ou senha incorretos");
-        }
-    }
-    
-    function mostrarPainelCliente() {
-        document.getElementById("cliente-deslogado").style.display = "none";
-        document.getElementById("cliente-logado").style.display = "block";
-        document.getElementById("info-cliente").innerHTML = `
-            <div style="background:white; padding:1rem; border-radius:12px; margin-bottom:1rem;">
-                <p><strong>👤 ${clienteAtual.nome}</strong></p>
-                <p>📧 ${clienteAtual.email}</p>
-                <p>📞 ${clienteAtual.telefone || "Não informado"}</p>
-            </div>
-        `;
-        
-        const meusPedidos = pedidos.filter(p => p.clienteId === clienteAtual.id);
-        if (meusPedidos.length === 0) {
-            document.getElementById("meus-pedidos").innerHTML = "<p>Você ainda não tem pedidos.</p>";
-        } else {
-            document.getElementById("meus-pedidos").innerHTML = meusPedidos.map(ped => `
-                <div style="background:white; padding:1rem; border-radius:12px; margin-bottom:1rem;">
-                    <div style="display:flex; justify-content:space-between; flex-wrap:wrap;">
-                        <strong>Pedido #${ped.id}</strong>
-                        <span class="status-${ped.status?.toLowerCase()}">${ped.status || "Pendente"}</span>
-                    </div>
-                    <p>Data: ${ped.data}</p>
-                    <p>Previsão de entrega: ${ped.previsaoEntrega || "Calculando..."}</p>
-                    <p>Total: R$ ${ped.total.toFixed(2)}</p>
-                    <details>
-                        <summary>Ver itens</summary>
-                        ${ped.itens.map(i => `<div>📦 ${i.nome} x${i.quantidade} = R$ ${(i.preco * i.quantidade).toFixed(2)}</div>`).join("")}
-                    </details>
-                </div>
-            `).join("");
-        }
-    }
-    
-    function logoutCliente() {
-        clienteAtual = null;
-        localStorage.removeItem("prestige_cliente_atual");
-        document.getElementById("cliente-deslogado").style.display = "block";
-        document.getElementById("cliente-logado").style.display = "none";
-        document.getElementById("login-email").value = "";
-        document.getElementById("login-senha").value = "";
-    }
-    
-    function mostrarCadastro() {
-        mostrarSecao("cadastro");
-    }
-    
-    // Admin Login
-    const ADMIN_SENHA = "admin123";
-    
-    function mostrarAdminLogin() {
-        mostrarSecao("admin");
-        document.getElementById("admin-login").style.display = "block";
-        document.getElementById("admin-painel").style.display = "none";
-    }
-    
-    function loginAdmin() {
-        const senha = document.getElementById("admin-senha").value;
-        if (senha === ADMIN_SENHA) {
-            adminLogado = true;
-            document.getElementById("admin-login").style.display = "none";
-            document.getElementById("admin-painel").style.display = "block";
-            mostrarAdminProdutos();
-            mostrarAdminPedidos();
-            mostrarAdminClientes();
-        } else {
-            alert("Senha incorreta");
-        }
-    }
-    
-    function logoutAdmin() {
-        adminLogado = false;
-        mostrarAdminLogin();
-        document.getElementById("admin-senha").value = "";
-    }
-    
-    // Admin Produtos
-    function mostrarAdminProdutos() {
-        const tbody = document.getElementById("admin-produtos-lista");
-        if (!tbody) return;
-        tbody.innerHTML = produtos.map(prod => `
-            <tr>
-                <td>${prod.id}</td>
-                <td><img src="${prod.imagem}" style="width:40px; height:40px; object-fit:cover;"></td>
-                <td>${prod.nome}</td>
-                <td>R$ ${prod.preco.toFixed(2)}</td>
-                <td>
-                    <button class="btn-editar" onclick="abrirModalEditar(${prod.id})">Editar</button>
-                    <button class="btn-excluir" onclick="excluirProduto(${prod.id})">Excluir</button>
-                </td>
-            </tr>
-        `).join("");
-    }
-    
-    function abrirModalEditar(id) {
-        const produto = produtos.find(p => p.id === id);
-        const modal = document.createElement("div");
-        modal.className = "modal";
-        modal.innerHTML = `
-            <div class="modal-conteudo">
-                <h3>Editar Produto</h3>
-                <label>Nome:</label>
-                <input type="text" id="edit-nome" value="${produto.nome}">
-                <label>Preço:</label>
-                <input type="number" id="edit-preco" step="0.01" value="${produto.preco}">
-                <label>Imagem URL:</label>
-                <input type="text" id="edit-imagem" value="${produto.imagem}">
-                <div style="margin-top:15px;">
-                    <button onclick="salvarEdicao(${id})">Salvar</button>
-                    <button onclick="this.closest('.modal').remove()">Cancelar</button>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(modal);
-    }
-    
-    function salvarEdicao(id) {
-        const novoNome = document.getElementById("edit-nome").value;
-        const novoPreco = parseFloat(document.getElementById("edit-preco").value);
-        const novaImagem = document.getElementById("edit-imagem").value;
-        const index = produtos.findIndex(p => p.id === id);
-        if (index !== -1) {
-            produtos[index] = { ...produtos[index], nome: novoNome, preco: novoPreco, imagem: novaImagem };
-            salvarDados();
-            mostrarAdminProdutos();
-            mostrarProdutos();
-            document.querySelector(".modal").remove();
-        }
-    }
-    
-    function excluirProduto(id) {
-        if (confirm("Remover produto?")) {
-            produtos = produtos.filter(p => p.id !== id);
-            salvarDados();
-            mostrarAdminProdutos();
-            mostrarProdutos();
-        }
-    }
-    
-    function adicionarProduto() {
-        const nome = document.getElementById("novo-nome").value;
-        const preco = parseFloat(document.getElementById("novo-preco").value);
-        let imagem = document.getElementById("nova-imagem").value;
-        if (!nome || isNaN(preco)) return alert("Preencha nome e preço");
-        if (!imagem) imagem = "https://picsum.photos/id/" + (Math.floor(Math.random() * 100) + 1) + "/200/200";
-        produtos.push({ id: Date.now(), nome, preco, imagem });
-        salvarDados();
-        mostrarAdminProdutos();
-        mostrarProdutos();
-        document.getElementById("novo-nome").value = "";
-        document.getElementById("novo-preco").value = "";
-    }
-    
-    // Admin Pedidos
-    function mostrarAdminPedidos() {
-        const tbody = document.getElementById("admin-pedidos-lista");
-        if (!tbody) return;
-        if (pedidos.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center">Nenhum pedido</td></tr>`;
-            return;
-        }
-        tbody.innerHTML = pedidos.map(ped => {
-            const cliente = clientes.find(c => c.id === ped.clienteId);
-            return `
-            <tr>
-                <td>#${ped.id}</td>
-                <td>${cliente?.nome || "Visitante"}</td>
-                <td>${ped.data}</td>
-                <td>${ped.itens.length} itens</td>
-                <td>R$ ${ped.total.toFixed(2)}</td>
-                <td>${ped.previsaoEntrega || "Calculando"}</td>
-                <td>
-                    <select class="status-select" onchange="alterarStatus(${ped.id}, this.value)">
-                        <option value="Pendente" ${ped.status === "Pendente" ? "selected" : ""}>⏳ Pendente</option>
-                        <option value="Aprovado" ${ped.status === "Aprovado" ? "selected" : ""}>✅ Aprovado</option>
-                        <option value="Em Produção" ${ped.status === "Em Produção" ? "selected" : ""}>🔨 Em Produção</option>
-                        <option value="Enviado" ${ped.status === "Enviado" ? "selected" : ""}>📦 Enviado</option>
-                        <option value="Entregue" ${ped.status === "Entregue" ? "selected" : ""}>🎯 Entregue</option>
-                    </select>
-                </td>
-                <td><button onclick="verDetalhesPedido(${ped.id})">Detalhes</button></td>
-            </tr>
-        `}).join("");
-    }
-    
-    function alterarStatus(id, novoStatus) {
-        const index = pedidos.findIndex(p => p.id === id);
-        if (index !== -1) {
-            pedidos[index].status = novoStatus;
-            salvarDados();
-            mostrarAdminPedidos();
-        }
-    }
-    
-    function verDetalhesPedido(id) {
-        const pedido = pedidos.find(p => p.id === id);
-        if (pedido) {
-            alert(`Pedido #${pedido.id}\nCliente: ${clientes.find(c => c.id === pedido.clienteId)?.nome || "Visitante"}\nItens:\n${pedido.itens.map(i => `- ${i.nome} x${i.quantidade} = R$ ${(i.preco * i.quantidade).toFixed(2)}`).join("\n")}\nFrete: R$ ${pedido.frete.toFixed(2)}\nTotal: R$ ${pedido.total.toFixed(2)}\nPrevisão: ${pedido.previsaoEntrega}`);
-        }
-    }
-    
-    function mostrarAdminClientes() {
-        const tbody = document.getElementById("admin-clientes-lista");
-        if (!tbody) return;
-        tbody.innerHTML = clientes.map(c => {
-            const totalPedidos = pedidos.filter(p => p.clienteId === c.id).length;
-            return `
-            <tr>
-                <td>${c.id}</td>
-                <td>${c.nome}</td>
-                <td>${c.email}</td>
-                <td>${c.telefone || "-"}</td>
-                <td>${totalPedidos}</td>
-                <td><button onclick="verPedidosCliente(${c.id})">Ver Pedidos</button></td>
-            </tr>
-        `}).join("");
-    }
-    
-    function verPedidosCliente(id) {
-        const pedidosCliente = pedidos.filter(p => p.clienteId === id);
-        alert(pedidosCliente.map(p => `Pedido #${p.id} - R$ ${p.total.toFixed(2)} - ${p.status}`).join("\n") || "Nenhum pedido");
-    }
-    
-    function mudarAdminTab(tab) {
-        document.querySelectorAll(".admin-tab").forEach(t => t.classList.remove("ativo"));
-        document.querySelectorAll(".admin-panel").forEach(p => p.classList.remove("ativo"));
-        if (tab === "produtos") {
-            document.querySelectorAll(".admin-tab")[0].classList.add("ativo");
-            document.getElementById("admin-produtos-panel").classList.add("ativo");
-        } else if (tab === "pedidos") {
-            document.querySelectorAll(".admin-tab")[1].classList.add("ativo");
-            document.getElementById("admin-pedidos-panel").classList.add("ativo");
-            mostrarAdminPedidos();
-        } else if (tab === "clientes") {
-            document.querySelectorAll(".admin-tab")[2].classList.add("ativo");
-            document.getElementById("admin-clientes-panel").classList.add("ativo");
-            mostrarAdminClientes();
-        } else if (tab === "exportar") {
-            document.querySelectorAll(".admin-tab")[3].classList.add("ativo");
-            document.getElementById("admin-exportar-panel").classList.add("ativo");
-        }
-    }
-    
-    function exportarPedidosJSON() {
-        const dataStr = JSON.stringify(pedidos, null, 2);
-        const blob = new Blob([dataStr], {type: "application/json"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `pedidos_${new Date().toISOString().slice(0,19)}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-    }
-    
-    function exportarPedidosCSV() {
-        let csv = "ID,Cliente,Data,Itens,Subtotal,Frete,Total,Status,Previsão\n";
-        pedidos.forEach(ped => {
-            const cliente = clientes.find(c => c.id === ped.clienteId);
-            csv += `${ped.id},"${cliente?.nome || "Visitante"}",${ped.data},"${ped.itens.length} itens",${ped.subtotal.toFixed(2)},${ped.frete.toFixed(2)},${ped.total.toFixed(2)},${ped.status},${ped.previsaoEntrega}\n`;
+        document.querySelectorAll(".categoria-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".categoria-btn").forEach(b => b.classList.remove("ativo"));
+                btn.classList.add("ativo");
+                renderizarProdutos(btn.dataset.categoria);
+            });
         });
-        const blob = new Blob([csv], {type: "text/csv"});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `pedidos_${new Date().toISOString().slice(0,19)}.csv`;
-        a.click();
-        URL.revokeObjectURL(url);
     }
     
-    // Produtos e Carrinho (mantido igual)
-    function mostrarProdutos() {
+    function renderizarProdutos(categoria = "todos") {
         const grid = document.getElementById("produtos-grid");
-        if (!grid) return;
-        grid.innerHTML = produtos.map(prod => `
+        const filtrados = categoria === "todos" ? produtos : produtos.filter(p => p.categoria === categoria);
+        
+        grid.innerHTML = filtrados.map(prod => `
             <div class="produto-card">
                 <img src="${prod.imagem}" onerror="this.src='https://picsum.photos/id/1/200/200'">
                 <h3>${prod.nome}</h3>
                 <div class="preco">R$ ${prod.preco.toFixed(2)}</div>
-                <button class="btn-personalizar" onclick="abrirPersonalizacao(${prod.id})">✨ Personalizar</button>
+                <div class="peso">⚖️ Peso: ${prod.peso}g</div>
+                <button onclick="abrirPersonalizacao(${prod.id})">✨ Personalizar</button>
             </div>
         `).join("");
         atualizarContadorCarrinho();
     }
     
+    // ========== PERSONALIZAÇÃO (COM OPÇÃO FRENTE/VERSO) ==========
     function abrirPersonalizacao(id) {
         const produto = produtos.find(p => p.id === id);
-        const categoria = getCategoria(produto.nome);
-        const opcoes = subcategorias[categoria] || subcategorias["Padrão"];
         const modal = document.createElement("div");
         modal.className = "modal";
         modal.innerHTML = `
             <div class="modal-conteudo">
                 <h3>${produto.nome}</h3>
                 <img src="${produto.imagem}" style="width:100%; max-height:150px; object-fit:contain;">
-                <p><strong>R$ ${produto.preco.toFixed(2)}</strong></p>
-                <label>Variação:</label>
-                <select id="selVariacao">${opcoes.map(op => `<option>${op}</option>`).join("")}</select>
-                <label>Descrição (cor, texto, medidas):</label>
-                <textarea id="txtDescricao" rows="3"></textarea>
-                <label>Anexar arquivo:</label>
-                <input type="file" id="fileAnexo" accept="image/*,application/pdf">
+                <p><strong>Preço: R$ ${produto.preco.toFixed(2)}</strong></p>
+                <p><strong>Peso por peça: ${produto.peso}g</strong></p>
+                
+                <label>Quantidade de peças:</label>
+                <select id="qtdPecas" style="width:100%; padding:8px; margin:8px 0;">
+                    <option value="1">1 peça (frente)</option>
+                    <option value="2">2 peças (frente e verso)</option>
+                </select>
+                
+                <label>Descrição / Especificações:</label>
+                <textarea id="descricao" rows="3" placeholder="Cor, texto, medidas, observações..."></textarea>
+                
+                <label>Anexar arquivo (layout/arte):</label>
+                <input type="file" id="anexo" accept="image/*,application/pdf">
+                <div id="previewAnexo" style="margin-top:5px; font-size:0.8rem;"></div>
+                
                 <div style="margin-top:15px;">
-                    <button onclick="adicionarPersonalizado(${produto.id}, '${produto.nome}', ${produto.preco})">Adicionar</button>
-                    <button onclick="this.closest('.modal').remove()">Cancelar</button>
+                    <button onclick="adicionarAoCarrinho(${produto.id}, '${produto.nome}', ${produto.preco}, ${produto.peso})">✅ Adicionar</button>
+                    <button onclick="this.closest('.modal').remove()">❌ Cancelar</button>
                 </div>
             </div>
         `;
         document.body.appendChild(modal);
-        window.persTemp = { variacao: opcoes[0], descricao: "", anexo: "" };
-        const sel = modal.querySelector("#selVariacao");
-        const txt = modal.querySelector("#txtDescricao");
-        const file = modal.querySelector("#fileAnexo");
-        sel.onchange = () => { window.persTemp.variacao = sel.value; };
-        txt.onchange = () => { window.persTemp.descricao = txt.value; };
-        file.onchange = (e) => {
+        
+        window.persTemp = { qtdPecas: 1, descricao: "", anexo: "" };
+        
+        const selQtd = modal.querySelector("#qtdPecas");
+        const txtDesc = modal.querySelector("#descricao");
+        const fileInput = modal.querySelector("#anexo");
+        
+        selQtd.onchange = () => { window.persTemp.qtdPecas = parseInt(selQtd.value); };
+        txtDesc.onchange = () => { window.persTemp.descricao = txtDesc.value; };
+        fileInput.onchange = (e) => {
             if (e.target.files[0]) {
                 const reader = new FileReader();
-                reader.onload = ev => { window.persTemp.anexo = ev.target.result; };
+                reader.onload = ev => {
+                    window.persTemp.anexo = ev.target.result;
+                    modal.querySelector("#previewAnexo").innerHTML = `📎 ${e.target.files[0].name}`;
+                };
                 reader.readAsDataURL(e.target.files[0]);
             }
         };
     }
     
-    function adicionarPersonalizado(id, nome, preco) {
+    function adicionarAoCarrinho(id, nome, preco, pesoUnitario) {
+        const qtdPecas = window.persTemp?.qtdPecas || 1;
+        const pesoTotal = pesoUnitario * qtdPecas;
+        const precoTotal = preco * qtdPecas;
+        
         const item = {
             id: Date.now(),
-            nome: `${nome} (${window.persTemp?.variacao || "Padrão"})`,
-            preco: preco,
+            produtoId: id,
+            nome: `${nome} (${qtdPecas} peça${qtdPecas > 1 ? 's' : ''})`,
+            preco: precoTotal,
+            precoUnitario: preco,
             quantidade: 1,
+            qtdPecas: qtdPecas,
+            peso: pesoTotal,
             descricao: window.persTemp?.descricao || "",
-            anexo: window.persTemp?.anexo || ""
+            anexo: window.persTemp?.anexo || "",
+            imagem: produtos.find(p => p.id === id)?.imagem
         };
+        
         carrinho.push(item);
         salvarDados();
         mostrarCarrinho();
         atualizarContadorCarrinho();
-        alert("Item adicionado!");
+        alert(`✅ ${item.nome} adicionado! Peso: ${pesoTotal}g`);
         document.querySelector(".modal")?.remove();
         mostrarSecao("carrinho");
     }
     
+    // ========== CARRINHO ==========
     function mostrarCarrinho() {
         const container = document.getElementById("carrinho-lista");
         if (!container) return;
+        
         if (carrinho.length === 0) {
             container.innerHTML = "<p style='text-align:center; padding:2rem;'>Carrinho vazio</p>";
             atualizarTotal();
             return;
         }
+        
         container.innerHTML = carrinho.map((item, idx) => `
             <div class="carrinho-item">
-                <div>
+                <div style="flex:2">
                     <strong>${item.nome}</strong><br>
-                    R$ ${item.preco.toFixed(2)} x ${item.quantidade} = R$ ${(item.preco * item.quantidade).toFixed(2)}
-                    ${item.descricao ? `<div style="font-size:0.8rem;">📝 ${item.descricao}</div>` : ""}
-                    ${item.anexo ? `<div><a href="${item.anexo}" download>📎 Anexo</a></div>` : ""}
+                    R$ ${item.preco.toFixed(2)}<br>
+                    <small>⚖️ Peso: ${item.peso}g | ${item.qtdPecas} peça(s)</small>
+                    ${item.descricao ? `<div style="font-size:0.8rem; color:#666;">📝 ${item.descricao.substring(0,50)}</div>` : ""}
+                    ${item.anexo ? `<div style="font-size:0.8rem;"><a href="${item.anexo}" download="anexo_${idx}">📎 Baixar anexo</a></div>` : ""}
                 </div>
                 <div>
-                    <button onclick="alterarQtd(${idx}, -1)">-</button>
-                    <span>${item.quantidade}</span>
-                    <button onclick="alterarQtd(${idx}, 1)">+</button>
-                    <button onclick="removerItem(${idx})" style="background:#dc3545;">🗑</button>
+                    <button onclick="removerItem(${idx})" style="background:#dc3545;">🗑 Remover</button>
                 </div>
             </div>
         `).join("");
         atualizarTotal();
-    }
-    
-    function alterarQtd(idx, delta) {
-        if (carrinho[idx].quantidade + delta > 0) carrinho[idx].quantidade += delta;
-        else carrinho.splice(idx, 1);
-        salvarDados();
-        mostrarCarrinho();
-        atualizarContadorCarrinho();
     }
     
     function removerItem(idx) {
@@ -920,50 +592,87 @@
         atualizarContadorCarrinho();
     }
     
+    function calcularPesoTotal() {
+        return carrinho.reduce((s, i) => s + i.peso, 0);
+    }
+    
+    function calcularSubtotal() {
+        return carrinho.reduce((s, i) => s + i.preco, 0);
+    }
+    
     function atualizarTotal() {
-        const subtotal = carrinho.reduce((s, i) => s + (i.preco * i.quantidade), 0);
+        const subtotal = calcularSubtotal();
         const total = subtotal + freteValor;
         const div = document.getElementById("total-carrinho");
-        if (div) div.innerHTML = `<div>Subtotal: R$ ${subtotal.toFixed(2)}</div><div>Frete: R$ ${freteValor.toFixed(2)}</div><div>Total: R$ ${total.toFixed(2)}</div>`;
+        const pesoTotal = calcularPesoTotal();
+        
+        if (div) {
+            div.innerHTML = `
+                <div>Subtotal: R$ ${subtotal.toFixed(2)}</div>
+                <div>⚖️ Peso total: ${pesoTotal}g (${(pesoTotal/1000).toFixed(2)}kg)</div>
+                <div>Frete: R$ ${freteValor.toFixed(2)}</div>
+                <div style="font-size:1.3rem; margin-top:10px;">Total: R$ ${total.toFixed(2)}</div>
+            `;
+        }
+        
+        // Verificar pedido mínimo
+        const alerta = document.getElementById("alerta-minimo");
+        const btnFinalizar = document.getElementById("btn-finalizar");
+        if (subtotal < PEDIDO_MINIMO) {
+            alerta.style.display = "block";
+            alerta.innerHTML = `⚠️ Pedido mínimo: R$ ${PEDIDO_MINIMO.toFixed(2)}. Faltam R$ ${(PEDIDO_MINIMO - subtotal).toFixed(2)} para finalizar.`;
+            if (btnFinalizar) btnFinalizar.disabled = true;
+        } else {
+            alerta.style.display = "none";
+            if (btnFinalizar) btnFinalizar.disabled = false;
+        }
     }
     
     function atualizarContadorCarrinho() {
-        const count = carrinho.reduce((s, i) => s + i.quantidade, 0);
+        const count = carrinho.length;
         const span = document.getElementById("cart-count");
         if (span) span.innerText = count;
     }
     
+    // ========== FRETE (baseado no peso total) ==========
     function calcularFrete() {
         const cep = document.getElementById("cep").value;
-        const peso = parseFloat(document.getElementById("peso").value);
-        const alt = parseFloat(document.getElementById("altura").value) || 10;
-        const larg = parseFloat(document.getElementById("largura").value) || 20;
-        const comp = parseFloat(document.getElementById("comprimento").value) || 30;
-        if (!cep || isNaN(peso)) return alert("Preencha CEP e peso");
+        if (!cep) {
+            alert("Digite um CEP");
+            return;
+        }
         
-        const volume = alt * larg * comp;
-        const pesoCubico = volume / 6000;
-        const pesoFinal = Math.max(peso, pesoCubico);
-        const ultimo = parseInt(cep.replace(/\D/g, '').slice(-1)) || 0;
-        let fator = ultimo < 3 ? 0.9 : ultimo < 6 ? 1.2 : 1.5;
-        freteValor = Math.max(9.9, 7 + (pesoFinal * 1.8) * fator);
-        fretePrazo = Math.min(12, Math.max(2, Math.floor(2 + pesoFinal * 0.5 + fator)));
+        const pesoTotal = calcularPesoTotal();
+        const pesoKg = pesoTotal / 1000;
         
-        const prazoProducao = calcularPrazoProducao();
-        const entregaDias = prazoProducao + fretePrazo;
-        const dataEntrega = calcularDataEntrega(entregaDias);
+        // Simulação de frete baseada no peso
+        let valorBase = 10;
+        if (pesoKg <= 0.5) valorBase = 12;
+        else if (pesoKg <= 1) valorBase = 15;
+        else if (pesoKg <= 2) valorBase = 20;
+        else if (pesoKg <= 5) valorBase = 30;
+        else valorBase = 45;
         
-        document.getElementById("frete-resultado").innerHTML = `<span style="color:green;">✅ Frete: R$ ${freteValor.toFixed(2)} | Prazo Correios: ${fretePrazo} dias</span>`;
-        document.getElementById("prazo-info").style.display = "block";
-        document.getElementById("prazo-info").innerHTML = `
-            <strong>⏱️ Prazos Estimados:</strong><br>
-            • Produção: ${prazoProducao} dias úteis (mínimo 7, máximo 15)<br>
-            • Transporte: ${fretePrazo} dias úteis<br>
-            • <strong>Previsão de entrega: ${dataEntrega}</strong>
+        // Fator regional baseado no CEP
+        const cepNum = parseInt(cep.replace(/\D/g, '')) || 0;
+        const ultimoDigito = cepNum % 10;
+        let fator = 1;
+        if (ultimoDigito < 3) fator = 0.9;
+        else if (ultimoDigito < 6) fator = 1.1;
+        else fator = 1.3;
+        
+        freteValor = Math.max(9.9, valorBase * fator);
+        fretePrazo = Math.min(12, Math.max(2, Math.floor(3 + pesoKg * 1.5)));
+        
+        document.getElementById("frete-resultado").innerHTML = `
+            <span style="color:green;">✅ Frete: R$ ${freteValor.toFixed(2)}</span><br>
+            <span>📦 Prazo: ${fretePrazo} dias úteis</span><br>
+            <span>⚖️ Peso calculado: ${pesoKg.toFixed(2)}kg</span>
         `;
         atualizarTotal();
     }
     
+    // ========== FINALIZAR COMPRA ==========
     function finalizarCompra() {
         if (carrinho.length === 0) return alert("Carrinho vazio");
         if (!clienteAtual) {
@@ -972,64 +681,55 @@
             return;
         }
         
-        const subtotal = carrinho.reduce((s, i) => s + (i.preco * i.quantidade), 0);
-        const prazoProducao = calcularPrazoProducao();
-        const entregaDias = prazoProducao + fretePrazo;
-        const dataEntrega = calcularDataEntrega(entregaDias);
+        const subtotal = calcularSubtotal();
+        if (subtotal < PEDIDO_MINIMO) {
+            alert(`Pedido mínimo: R$ ${PEDIDO_MINIMO.toFixed(2)}. Seu subtotal: R$ ${subtotal.toFixed(2)}`);
+            return;
+        }
+        
+        // Prazo de produção: 7 a 15 dias úteis
+        const prazoProducao = Math.floor(Math.random() * (15 - 7 + 1) + 7);
         
         const pedido = {
             id: Date.now(),
             clienteId: clienteAtual.id,
+            clienteNome: clienteAtual.nome,
+            clienteEmail: clienteAtual.email,
+            clienteTelefone: clienteAtual.telefone,
             data: new Date().toLocaleString(),
             itens: JSON.parse(JSON.stringify(carrinho)),
             subtotal: subtotal,
             frete: freteValor,
             total: subtotal + freteValor,
-            status: "Pendente",
+            pesoTotal: calcularPesoTotal(),
             prazoProducao: prazoProducao,
-            previsaoEntrega: dataEntrega
+            fretePrazo: fretePrazo,
+            prazoTotal: prazoProducao + fretePrazo,
+            status: "Pendente",
+            aprovado: false
         };
+        
+        // Calcular data estimada
+        let data = new Date();
+        let dias = 0;
+        while (dias < pedido.prazoTotal) {
+            data.setDate(data.getDate() + 1);
+            if (data.getDay() !== 0 && data.getDay() !== 6) dias++;
+        }
+        pedido.previsaoEntrega = data.toLocaleDateString('pt-BR');
+        
         pedidos.unshift(pedido);
         salvarDados();
+        
         carrinho = [];
         freteValor = 0;
         salvarDados();
         mostrarCarrinho();
         atualizarContadorCarrinho();
-        document.getElementById("cep").value = "";
-        document.getElementById("frete-resultado").innerHTML = "";
-        alert(`✅ Pedido #${pedido.id} finalizado!\nPrevisão de entrega: ${dataEntrega}`);
+        
+        alert(`✅ Pedido #${pedido.id} finalizado!\nPrevisão de entrega: ${pedido.previsaoEntrega}`);
         mostrarSecao("produtos");
     }
     
-    function mostrarSecao(secao) {
-        document.querySelectorAll(".secao").forEach(s => s.classList.remove("ativa"));
-        document.getElementById(`secao-${secao}`).classList.add("ativa");
-        if (secao === "carrinho") mostrarCarrinho();
-        if (secao === "cliente") {
-            const savedCliente = localStorage.getItem("prestige_cliente_atual");
-            if (savedCliente) {
-                clienteAtual = JSON.parse(savedCliente);
-                mostrarPainelCliente();
-            } else {
-                document.getElementById("cliente-deslogado").style.display = "block";
-                document.getElementById("cliente-logado").style.display = "none";
-            }
-        }
-    }
-    
-    // Inicialização
-    carregarDados();
-    carregarClientes();
-    mostrarProdutos();
-    mostrarCarrinho();
-    atualizarContadorCarrinho();
-    
-    // Verificar cliente logado
-    const savedCliente = localStorage.getItem("prestige_cliente_atual");
-    if (savedCliente) {
-        clienteAtual = JSON.parse(savedCliente);
-    }
-</script>
-</body>
-</html>
+    // ========== FOLHA DE ROSTO / APROVAÇÃO ==========
+    function abrirFolhaRosto(pedido) {
